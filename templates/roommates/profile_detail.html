@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<article>
+    <h2>Roommate Profile for: {{ object.user.username }}</h2>
+    <p><strong>Budget:</strong> ${{ object.budget }}/month</p>
+    <p><strong>Preferred Move-in Date:</strong> {{ object.preferred_move_in_date|date:"F d, Y" }}</p>
+    <p><strong>Location Preference:</strong> {{ object.location_preference }}</p>
+    <hr>
+    <h3>About Me:</h3>
+    <p>{{ object.bio }}</p>
+
+    {% if user == object.user %}
+        <a href="{% url 'profile_update' pk=object.pk %}">Edit My Profile</a>
+    {% endif %}
+</article>
+<a href="{% url 'profile_list' %}">Back to all profiles</a>
+{% endblock content %}

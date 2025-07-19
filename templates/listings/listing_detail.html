@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <article style="max-width: 800px; margin: auto;">
+    
+    <h1>{{ object.title }}</h1>
+    
+    {% if object.main_photo %}
+      <img src="{{ object.main_photo.url }}" alt="{{ object.title }}" style="max-width: 100%; height: auto; margin-bottom: 20px;">
+    {% endif %}
+
+    <h3>Details:</h3>
+    <ul>
+        <li><strong>Price:</strong> Nrs {{ object.price_per_month }} per month</li>
+        <li><strong>Owner:</strong> {{ object.owner.username }}</li>
+    </ul>
+
+    <h3>Description:</h3>
+    <p>{{ object.description|linebreaks }}</p>
+
+    <hr style="margin: 20px 0;">
+
+    {% if user.is_authenticated %}
+        {% if user == object.owner %}
+            <p><strong>This is your listing.</strong> You can see booking requests on your <a href="{% url 'owner_dashboard' %}">dashboard</a>.</p>
+        {% else %}
+            <!-- This form is where the error is happening -->
+            <form action="{% url 'create_booking' listing_id=object.pk %}" method="post">
+                {% csrf_token %}
+                <button type="submit" style="padding: 10px 15px; font-size: 1.1em;">Request to Book This Room</button>
+            </form>
+        {% endif %}
+    {% else %}
+        <p><strong><a href="{% url 'login' %}?next={{ request.path }}">Log in</a> to request a booking or contact the owner.</strong></p>
+    {% endif %}
+
+    <hr style="margin: 20px 0;">
+    
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        <hr>
+    {% endif %}
+
+    {% if user == object.owner %}
+      <a href="{% url 'listing_update' pk=object.pk %}">Edit This Listing</a> |
+      <a href="{% url 'listing_delete' pk=object.pk %}">Delete This Listing</a>
+    {% endif %}
+    
+    <br><br>
+    <a href="{% url 'listing_list' %}">← Back to all listings</a>
+  </article>
+{% endblock content %}

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>My Bookings Dashboard</h1>
+<hr>
+
+{% for listing in listings %}
+    <div style="margin-bottom: 30px;">
+        <h3>Listing: <a href="{{ listing.get_absolute_url }}">{{ listing.title }}</a></h3>
+        
+        <h4>Booking Requests for this Listing:</h4>
+        {% with bookings=listing.bookings.all %}
+            {% if bookings %}
+                <ul>
+                    {% for booking in bookings %}
+                    <li>
+                        Request from: <strong>{{ booking.requester.username }}</strong>
+                        | Status: <strong>{{ booking.get_status_display }}</strong>
+                        
+                        {% if booking.status == 'PENDING' %}
+                        <!-- Approve/Deny Forms -->
+                        <form action="{% url 'update_booking_status' booking.pk 'APPROVED' %}" method="post" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit">Approve</button>
+                        </form>
+                        <form action="{% url 'update_booking_status' booking.pk 'DENIED' %}" method="post" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit">Deny</button>
+                        </form>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>No booking requests for this listing yet.</p>
+            {% endif %}
+        {% endwith %}
+    </div>
+{% empty %}
+    <p>You have not created any listings. <a href="{% url 'listing_create' %}">Create one now!</a></p>
+{% endfor %}
+{% endblock content %}

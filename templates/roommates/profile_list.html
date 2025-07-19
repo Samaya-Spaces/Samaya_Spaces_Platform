@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Find a Roommate</h1>
+<p>Browse profiles of people looking for roommates.</p>
+<hr>
+{% for profile in profiles %}
+    <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 15px;">
+        <h3><a href="{{ profile.get_absolute_url }}">{{ profile.user.username }}</a></h3>
+        <p><b>Budget:</b> ${{ profile.budget }}/month</p>
+        <p><b>Location Preference:</b> {{ profile.location_preference }}</p>
+        <p><i>{{ profile.bio|truncatewords:20 }}</i></p>
+    </div>
+{% empty %}
+    <p>No one is looking for a roommate right now.</p>
+{% endfor %}
+{% endblock content %}

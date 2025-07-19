@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>All Listings</h1>
+  {% for listing in listings %}
+    <div>
+      <h2><a href="{{ listing.get_absolute_url }}">{{ listing.title }}</a></h2>
+      <p>By: {{ listing.owner.username }}</p>
+      <p>Nrs {{ listing.price_per_month }} per month</p>
+    </div>
+    <hr>
+  {% empty %}
+    <p>No listings found.</p>
+  {% endfor %}
+{% endblock content %}

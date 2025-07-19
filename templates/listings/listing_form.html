@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>{% if object %}Edit Listing{% else %}Create New Listing{% endif %}</h2>
+  <!-- ADD enctype ATTRIBUTE TO THE FORM TAG -->
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save</button>
+  </form>
+{% endblock content %}

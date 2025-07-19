@@ -23,4 +23,6 @@ class Listing(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('listing_detail', kwargs={'pk': self.pk})
+        # Tell Django to look for the URL named 'detail'
+        # specifically inside the 'listings' app namespace.
+        return reverse('listings:detail', kwargs={'pk': self.pk})

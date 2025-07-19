@@ -36,6 +36,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'django.contrib.admin',
+     'channels',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -45,6 +46,7 @@ INSTALLED_APPS = [
     'listings.apps.ListingsConfig',   
     'bookings.apps.BookingsConfig',
     'roommates.apps.RoommatesConfig',
+    'chat.apps.ChatConfig'
 ]
 
 MIDDLEWARE = [
@@ -135,11 +137,18 @@ AUTH_USER_MODEL = 'users.User'
 # ... at the end of the file
 
 # Redirect URLs
-LOGIN_REDIRECT_URL = 'listing_list'
+LOGIN_REDIRECT_URL = 'listings:list'
+LOGOUT_REDIRECT_URL = 'listings:list'
 
-LOGOUT_REDIRECT_URL = 'listing_list'
 
 # Media files (user-uploaded content)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+ASGI_APPLICATION = 'renting_service.asgi.application'
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
 

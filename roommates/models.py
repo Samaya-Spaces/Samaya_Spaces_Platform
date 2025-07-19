@@ -24,6 +24,5 @@ class RoommateProfile(models.Model):
 
     def __str__(self):
         return f"Roommate profile for {self.user.username}"
-
     def get_absolute_url(self):
-        return reverse('profile_detail', kwargs={'pk': self.pk})
+        return reverse('roommates:detail', kwargs={'pk': self.pk})

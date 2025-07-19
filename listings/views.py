@@ -11,6 +11,7 @@ from django.urls import reverse_lazy
 from .models import Listing
 from .forms import ListingForm
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.template import loader
 
 class ListingListView(ListView):
     model = Listing

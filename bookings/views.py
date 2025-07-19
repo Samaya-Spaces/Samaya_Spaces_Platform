@@ -12,19 +12,19 @@ def create_booking_request(request, listing_id):
 
     if listing.owner == request.user:
         messages.error(request, "You cannot book your own listing.")
-        return redirect('listing_detail', pk=listing_id)
+        return redirect('listings:detail', pk=listing_id) 
 
     existing_booking = Booking.objects.filter(listing=listing, requester=request.user, status='PENDING').exists()
     if existing_booking:
         messages.info(request, "You already have a pending request for this listing.")
-        return redirect('listing_detail', pk=listing_id)
+        return redirect('listings:detail', pk=listing_id)
 
     if request.method == 'POST':
         Booking.objects.create(listing=listing, requester=request.user)
         messages.success(request, "Your booking request has been sent to the owner.")
-        return redirect('listing_detail', pk=listing_id)
+        return redirect('listings:detail', pk=listing_id) 
 
-    return redirect('listing_detail', pk=listing_id)
+    return redirect('listings:detail', pk=listing_id) 
 
 
 @login_required

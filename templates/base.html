@@ -1,38 +1,62 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Samaya Spaces</title>
-    <!-- A little bit of styling to make the nav look cleaner -->
+    <title>Samaya Spaces - Find Your Place and People</title>
+    
+    <!-- A little bit of simple styling to make the navigation bar look clean -->
     <style>
-        nav a, nav form button {
-            margin: 0 10px;
+        body { font-family: sans-serif; }
+        nav { 
+            background-color: #f8f8f8; 
+            padding: 10px; 
+            border-bottom: 1px solid #ddd;
+            overflow: hidden; /* This helps contain the floated elements */
         }
-        .nav-right {
-            float: right;
+        nav a, nav form button { 
+            margin: 0 10px;
+            color: #337ab7;
+            text-decoration: none;
+            font-size: 1em;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        .nav-right { 
+            float: right; 
+        }
+        .messages {
+            list-style: none;
+            padding: 10px;
+            margin: 10px 0;
+            background-color: #e7f3fe;
+            border-left: 6px solid #2196F3;
         }
     </style>
 </head>
 <body>
+
+    <!-- ======================= NAVIGATION BAR ======================= -->
     <nav>
+        
         <!-- Main Site Navigation (Visible to Everyone) -->
-        <a href="{% url 'listing_list' %}">Find a Room</a>
-        <a href="{% url 'profile_list' %}">Find a Roommate</a>
+        <a href="{% url 'listings:list' %}">Find a Room</a>
+        <a href="{% url 'roommates:list' %}">Find a Roommate</a>
 
         <!-- User-specific links, floated to the right -->
         <div class="nav-right">
             {% if user.is_authenticated %}
                 <!-- This section is for LOGGED-IN users -->
-                <a href="{% url 'owner_dashboard' %}">My Listings & Bookings</a>
-                <a href="{% url 'my_profile' %}">My Roommate Profile</a>
+                <a href="{% url 'listings:owner_dashboard' %}">My Listings & Bookings</a>
+                <a href="{% url 'roommates:my_profile' %}">My Roommate Profile</a>
                 
                 <span style="margin: 0 10px;">|</span>
                 
                 <span>Hi, {{ user.username }}!</span>
 
-                <!-- This is the corrected Logout form -->
+                <!-- The Logout link MUST be a form that sends a POST request -->
                 <form action="{% url 'logout' %}" method="post" style="display: inline;">
                     {% csrf_token %}
-                    <button type="submit" style="background:none; border:none; padding:0; color:blue; text-decoration:underline; cursor:pointer; font-size: 1em;">Logout</button>
+                    <button type="submit" style="background:none; border:none; padding:0; color:blue; text-decoration:underline; cursor:pointer;">Logout</button>
                 </form>
 
             {% else %}
@@ -41,10 +65,15 @@
                 <a href="{% url 'signup' %}">Sign Up</a>
             {% endif %}
         </div>
-    </nav>
-    <hr style="clear: both;">
 
-    <!-- Display Django's messages (e.g., success or error notifications) -->
+    </nav>
+    <!-- ===================== END NAVIGATION BAR ===================== -->
+    
+    <hr style="clear: both; visibility: hidden;">
+
+
+    <!-- ===================== MESSAGES FRAMEWORK ===================== -->
+    <!-- This block will display success or error messages from our views -->
     {% if messages %}
         <ul class="messages">
             {% for message in messages %}
@@ -53,10 +82,16 @@
         </ul>
         <hr>
     {% endif %}
+    <!-- =================== END MESSAGES FRAMEWORK =================== -->
 
+
+    <!-- ===================== MAIN PAGE CONTENT ====================== -->
     <main>
         {% block content %}
+        <!-- The content from other templates (like listing_list.html) will be inserted here -->
         {% endblock content %}
     </main>
+    <!-- =================== END MAIN PAGE CONTENT ==================== -->
+
 </body>
 </html>

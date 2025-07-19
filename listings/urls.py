@@ -10,11 +10,21 @@ from .views import (
     OwnerDashboardView,
 )
 
+# This line is CRITICAL. It creates the 'listings' namespace.
+# Without this, {% url 'listings:list' %} will fail.
+app_name = 'listings'
+
+# This is the "phonebook" for the listings app.
 urlpatterns = [
-    path('', ListingListView.as_view(), name='listing_list'),
+    # This line connects the empty path ('') to the ListView 
+    # and gives it the name 'list'.
+    # This is the definition for 'listings:list'.
+    path('', ListingListView.as_view(), name='list'),
+
+    # The rest of the URLs for this app
     path('dashboard/', OwnerDashboardView.as_view(), name='owner_dashboard'),
-    path('new/', ListingCreateView.as_view(), name='listing_create'),
-    path('<int:pk>/', ListingDetailView.as_view(), name='listing_detail'),
-    path('<int:pk>/edit/', ListingUpdateView.as_view(), name='listing_update'),
-    path('<int:pk>/delete/', ListingDeleteView.as_view(), name='listing_delete'),
+    path('new/', ListingCreateView.as_view(), name='create'),
+    path('<int:pk>/', ListingDetailView.as_view(), name='detail'),
+    path('<int:pk>/edit/', ListingUpdateView.as_view(), name='update'),
+    path('<int:pk>/delete/', ListingDeleteView.as_view(), name='delete'),
 ]

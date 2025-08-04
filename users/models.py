@@ -8,3 +8,7 @@ class User(AbstractUser):
     # profile_picture = models.ImageField(upload_to='profile_pics/', blank=True)
     phone_number = models.CharField(max_length=20, blank=True, null=True)
     citizenship_number = models.CharField(max_length=50, blank=True, null=True)
+    
+    
+    
+    

@@ -14,7 +14,8 @@ def signup(request):
             user = form.save()
             login(request, user)
             # Use the correct name for our new homepage
-            return redirect('listing_list') 
+            return redirect('login') 
     else:
         form = CustomUserCreationForm()
     return render(request, 'registration/signup.html', {'form': form})
+

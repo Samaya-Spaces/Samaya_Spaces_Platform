@@ -93,6 +93,7 @@ DATABASES = {
 
 #setting up email backend 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+DEFAULT_FROM_EMAIL = 'your_email@example.com'
 
 
 # Password validation

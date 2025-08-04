@@ -1,10 +1,100 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Log In</h2>
-<form method="post">
+<style>
+  .login-container {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 30px 25px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  .login-container h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #333;
+  }
+
+  form label {
+    display: block;
+    font-weight: 600;
+    margin-top: 15px;
+    color: #555;
+  }
+
+  form input[type="text"],
+  form input[type="password"] {
+    width: 100%;
+    padding: 10px 12px;
+    margin-top: 6px;
+    border: 1.8px solid #ccc;
+    border-radius: 5px;
+    font-size: 15px;
+    transition: border-color 0.3s ease;
+  }
+
+  form input[type="text"]:focus,
+  form input[type="password"]:focus {
+    border-color: #007BFF;
+    outline: none;
+  }
+
+  button[type="submit"] {
+    width: 100%;
+    background: #007BFF;
+    color: white;
+    font-weight: 700;
+    font-size: 16px;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    margin-top: 25px;
+    cursor: pointer;
+    transition: background-color 0.25s ease;
+  }
+
+  button[type="submit"]:hover {
+    background: #0056b3;
+  }
+
+  /* Optional small helper or error text */
+  .helper-text {
+    font-size: 13px;
+    color: #888;
+    margin-top: 4px;
+  }
+
+  /* Error message style (optional) */
+  .error-message {
+    color: #d9534f;
+    font-weight: 600;
+    margin-top: 10px;
+    text-align: center;
+  }
+</style>
+
+<div class="login-container">
+  <h2>Log In</h2>
+  <form method="post" novalidate>
     {% csrf_token %}
-    {{ form.as_p }}
+    <label for="id_username">Username</label>
+    <input type="text" id="id_username" name="username" required autofocus>
+
+    <label for="id_password">Password</label>
+    <input type="password" id="id_password" name="password" required>
+
+    {% if form.non_field_errors %}
+      <div class="error-message">
+        {% for error in form.non_field_errors %}
+          {{ error }}
+        {% endfor %}
+      </div>
+    {% endif %}
+
     <button type="submit">Log In</button>
-</form>
+  </form>
+</div>
 {% endblock content %}

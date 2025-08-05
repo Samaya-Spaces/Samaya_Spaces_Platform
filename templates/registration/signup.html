@@ -1,6 +1,5 @@
-
-
 {% extends 'base.html' %}
+{% load socialaccount %}
 
 {% block content %}
 <style>
@@ -66,6 +65,25 @@
     background: #0056b3;
   }
 
+  /* Google login button styles */
+  .google-login {
+    display: inline-block;
+    margin: 20px auto 10px;
+    padding: 10px 20px;
+    background-color: #DB4437;
+    color: white !important;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .google-login:hover {
+    background-color: #a33429;
+  }
+
   /* Optional small helper text */
   .helper-text {
     font-size: 13px;
@@ -78,7 +96,7 @@
   <h2>Create your account</h2>
   <form method="post" novalidate>
     {% csrf_token %}
-    
+
     <label for="id_username">Username</label>
     <input type="text" id="id_username" name="username" required>
 
@@ -103,6 +121,12 @@
     <label for="id_password2">Confirm Password</label>
     <input type="password" id="id_password2" name="password2" required minlength="8">
 
+    <!-- Google Login Button -->
+    <div style="text-align: center;">
+      <h3>Or Sign Up with</h3>
+      <a href="{% provider_login_url 'google' %}?next=/" class="google-login">Login with Google</a>
+    </div>
+
     <button type="submit">Sign Up</button>
   </form>
 </div>
@@ -122,5 +146,3 @@
   });
 </script>
 {% endblock content %}
-
-

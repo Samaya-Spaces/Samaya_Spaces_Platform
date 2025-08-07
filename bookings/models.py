@@ -1,7 +1,8 @@
+# bookings/models.py
 
 from django.db import models
 from django.conf import settings
-from listings.models import Listing
+from listings.models import Listing # Make sure to import the Listing model
 
 class Booking(models.Model):
     STATUS_CHOICES = [
@@ -18,7 +19,7 @@ class Booking(models.Model):
     requester = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name='bookings'
+        related_name='bookings_made' # Using a more specific related_name
     )
     status = models.CharField(
         max_length=10,
@@ -29,4 +30,4 @@ class Booking(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"Booking request by {self.requester.username} for {self.listing.title}"
+        return f"Booking request by {self.requester.username} for '{self.listing.title}'"

@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="max-width: 800px; margin: auto; padding: 20px;">
+    
+    <h2>Chat Room</h2>
+    <p style="color: #555;">
+        Your conversation with: 
+        <strong>
+        {% for user in conversation.participants.all %}
+            {% if user != request.user %}
+                {{ user.username }}
+            {% endif %}
+        {% endfor %}
+        </strong>
+    </p>
+
+    <!-- This div will display all the chat messages -->
+    <div id="chat-log" style="height: 450px; border: 1px solid #ddd; background-color: #f9f9f9; overflow-y: scroll; padding: 15px; margin-bottom: 15px; border-radius: 5px; display: flex; flex-direction: column; gap: 10px;">
+        
+        <!-- Load past messages from the database when the page first loads -->
+        {% for message in conversation.messages.all %}
+            <div class="message {% if message.author == request.user %}sent{% else %}received{% endif %}">
+                <strong>{{ message.author.username }}:</strong>
+                <p>{{ message.content|linebreaksbr }}</p>
+            </div>
+        {% endfor %}
+
+    </div>
+
+    <!-- The form for sending new messages -->
+    <div id="chat-input-container">
+        <textarea id="chat-message-input" rows="3" style="width: 100%; box-sizing: border-box; padding: 10px; border: 1px solid #ccc; border-radius: 5px;" placeholder="Type your message here... Press Enter to send."></textarea><br>
+        <button id="chat-message-submit" style="width: 100%; padding: 12px; margin-top: 5px; font-size: 1em; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">Send Message</button>
+    </div>
+
+</div>
+
+<!-- A bit of styling to differentiate sent vs. received messages -->
+<style>
+    .message {
+        padding: 8px 12px;
+        border-radius: 15px;
+        max-width: 70%;
+    }
+    .message p {
+        margin: 0;
+    }
+    .sent {
+        background-color: #007bff;
+        color: white;
+        align-self: flex-end; /* Aligns to the right */
+        border-bottom-right-radius: 0;
+    }
+    .received {
+        background-color: #e9e9eb;
+        color: black;
+        align-self: flex-start; /* Aligns to the left */
+        border-bottom-left-radius: 0;
+    }
+</style>
+
+<!-- ======================= JAVASCRIPT LOGIC ======================= -->
+<script>
+    // Get the conversation ID and current username from Django's template context
+    const conversationId = {{ conversation.id }};
+    const currentUsername = "{{ request.user.username }}";
+
+    // Find the HTML elements we need to interact with
+    const chatLog = document.querySelector('#chat-log');
+    const messageInput = document.querySelector('#chat-message-input');
+    const messageSubmitButton = document.querySelector('#chat-message-submit');
+
+    // --- Create the WebSocket connection ---
+    // The path here MUST match a `re_path` in your `chat/routing.py`
+    const chatSocket = new WebSocket(
+        'ws://'
+        + window.location.host
+        + '/ws/chat/'
+        + conversationId
+        + '/'
+    );
+
+    // --- Handle incoming messages FROM the server's broadcast ---
+    chatSocket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+
+        // Create a new message div and style it based on who sent it
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('message');
+        if (data.username === currentUsername) {
+            messageElement.classList.add('sent');
+        } else {
+            messageElement.classList.add('received');
+        }
+        
+        messageElement.innerHTML = '<strong>' + data.username + ':</strong><p>' + data.message + '</p>';
+        chatLog.appendChild(messageElement);
+
+        // Automatically scroll to the bottom of the chat log
+        chatLog.scrollTop = chatLog.scrollHeight;
+    };
+
+    // --- Handle WebSocket connection closing ---
+    chatSocket.onclose = function(e) {
+        console.error('Chat socket closed unexpectedly. Please refresh the page.');
+        messageSubmitButton.disabled = true;
+        messageInput.disabled = true;
+        messageInput.placeholder = 'Connection lost. Please refresh the page.';
+    };
+
+    // --- Function to send a message TO the server ---
+    function sendMessage() {
+        const message = messageInput.value;
+        if (message.trim() === '') {
+            return; // Don't send empty messages
+        }
+
+        // Send the message to the WebSocket server as a JSON string
+        chatSocket.send(JSON.stringify({
+            'message': message
+        }));
+
+        // Clear the input box after sending
+        messageInput.value = '';
+    }
+
+    // --- Add event listeners for the send button and the Enter key ---
+    messageSubmitButton.addEventListener('click', sendMessage);
+    messageInput.addEventListener('keyup', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {  // Send on Enter, allow new lines with Shift+Enter
+            e.preventDefault(); // Prevent default Enter key behavior (like adding a new line)
+            sendMessage();
+        }
+    });
+
+    // --- On page load, scroll to the bottom of the chat log and focus the input ---
+    chatLog.scrollTop = chatLog.scrollHeight;
+    messageInput.focus();
+</script>
+{% endblock %}

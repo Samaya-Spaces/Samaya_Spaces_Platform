@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="max-width: 800px; margin: auto;">
+    <h1>My Conversations</h1>
+    <hr>
+    
+    {% if conversations %}
+        <ul style="list-style: none; padding: 0;">
+            {% for conv in conversations %}
+                <li style="border: 1px solid #ddd; padding: 15px; margin-bottom: 10px; border-radius: 5px;">
+                    <a href="{% url 'chat:room' conv.id %}" style="text-decoration: none; color: #333;">
+                        <h4>
+                            Conversation with:
+                            {% for user in conv.participants.all %}
+                                {% if user != request.user %}
+                                    {{ user.username }}
+                                {% endif %}
+                            {% endfor %}
+                        </h4>
+                        <p style="color: #777;">
+                            {% if conv.messages.last %}
+                                <strong>{{ conv.messages.last.author.username }}:</strong> 
+                                {{ conv.messages.last.content|truncatechars:50 }}
+                            {% else %}
+                                <em>No messages yet.</em>
+                            {% endif %}
+                        </p>
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You have no active conversations. Approve a booking or roommate request to start chatting!</p>
+    {% endif %}
+</div>
+{% endblock content %}

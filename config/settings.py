@@ -35,8 +35,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
     'django.contrib.admin',
-     'channels',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'listings.apps.ListingsConfig',   
     'bookings.apps.BookingsConfig',
     'roommates.apps.RoommatesConfig',
-    'chat.apps.ChatConfig'
+    'chat.apps.ChatConfig',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -145,10 +146,20 @@ LOGOUT_REDIRECT_URL = 'listings:list'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-ASGI_APPLICATION = 'renting_service.asgi.application'
+ASGI_APPLICATION = 'config.asgi.application'
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels.layers.InMemoryChannelLayer"
     }
 }
 
+# Twilio Configuration
+TWILIO_ACCOUNT_SID = os.getenv('TWILIO_ACCOUNT_SID')
+TWILIO_AUTH_TOKEN = os.getenv('TWILIO_AUTH_TOKEN')
+TWILIO_PHONE_NUMBER = os.getenv('TWILIO_PHONE_NUMBER')
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}

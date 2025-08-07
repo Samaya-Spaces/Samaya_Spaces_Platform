@@ -19,6 +19,7 @@ urlpatterns = [
 
   
     path('', include('listings.urls')),
+    path('chat/', include('chat.urls')),
 ]
 
 if settings.DEBUG:

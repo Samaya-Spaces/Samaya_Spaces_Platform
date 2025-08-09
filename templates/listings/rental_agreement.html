@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Rental Agreement - {{ listing.title }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: auto;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+        h1, h2, h3 {
+            text-align: center;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .details ul {
+            list-style: none;
+            padding: 0;
+        }
+        .details li {
+            margin-bottom: 5px;
+        }
+        .section {
+            margin: 20px 0;
+        }
+        .signature-section {
+            margin-top: 40px;
+        }
+        .signature {
+            display: inline-block;
+            width: 45%;
+            text-align: center;
+            margin-top: 60px;
+        }
+        .signature-line {
+            border-top: 1px solid #000;
+            width: 80%;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Rental Agreement</h1>
+    <h2>{{ listing.title }}</h2>
+
+    {% if listing.main_photo %}
+        <img src="{{ listing.main_photo.url }}" alt="{{ listing.title }}">
+    {% endif %}
+
+    <div class="details section">
+        <h3>Details</h3>
+        <ul>
+            <li><strong>Owner:</strong> {{ listing.owner.username }}</li>
+            <li><strong>Tenant:</strong> {{ tenant_name }}</li>
+            <li><strong>Price:</strong> Nrs {{ listing.price_per_month }} per month</li>
+            <li><strong>Start Date:</strong> {{ start_date }}</li>
+            <li><strong>End Date:</strong> {{ end_date }}</li>
+            <li><strong>Address:</strong> {{ listing.address }}</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h3>Description</h3>
+        <p>{{ listing.description|linebreaks }}</p>
+    </div>
+
+    <div class="section">
+        <h3>Agreement Terms</h3>
+        <p>
+            This agreement is made between the landlord and tenant for the property described above.
+            The tenant agrees to pay rent in the amount specified and abide by the terms and conditions
+            mutually agreed upon. The landlord agrees to provide the property in a habitable condition
+            and address any major maintenance issues promptly.
+        </p>
+    </div>
+
+    <div class="signature-section">
+        <div class="signature">
+            <div class="signature-line"></div>
+            Landlord Signature
+        </div>
+        <div class="signature">
+            <div class="signature-line"></div>
+            Tenant Signature
+        </div>
+    </div>
+
+</body>
+</html>

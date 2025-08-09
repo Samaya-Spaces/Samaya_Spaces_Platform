@@ -18,6 +18,15 @@
     <h3>Description:</h3>
     <p>{{ object.description|linebreaks }}</p>
 
+        <!-- Download PDF Button -->
+        <p style="margin-top: 20px;">
+            <a href="{% url 'rental_agreement_pdf' listing_id=object.id %}" 
+               style="display:inline-block; padding:10px 15px; background:#4CAF50; color:white; text-decoration:none; border-radius:4px;">
+              📄 Download Rental Agreement PDF
+            </a>
+          </p>
+      
+
     <hr style="margin: 20px 0;">
 
     {% if user.is_authenticated %}

@@ -12,7 +12,7 @@ def signup(request):
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            login(request, user)
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             # Use the correct name for our new homepage
             return redirect('listing_list') 
     else:

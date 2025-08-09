@@ -11,6 +11,12 @@ from django.urls import reverse_lazy
 from .models import Listing
 from .forms import ListingForm
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import get_object_or_404
+from django.template.loader import render_to_string
+from django.http import HttpResponse
+from weasyprint import HTML
+import tempfile
+
 
 class ListingListView(ListView):
     model = Listing
@@ -82,3 +88,31 @@ class OwnerDashboardView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         # Filter listings to only show those owned by the current user
         return Listing.objects.filter(owner=self.request.user).order_by('-created_at')
+    
+#PDF generation view
+def rental_agreement_pdf(request, listing_id):
+    listing = get_object_or_404(Listing, id=listing_id)
+
+    # Example static values (replace later with real form data)
+    tenant_name = "John Doe"
+    start_date = "2025-08-15"
+    end_date = "2026-08-15"
+
+    # Render HTML template with context
+    html_string = render_to_string('listings/rental_agreement.html', {
+        'listing': listing,
+        'tenant_name': tenant_name,
+        'start_date': start_date,
+        'end_date': end_date,
+    })
+
+    # Generate PDF
+    with tempfile.NamedTemporaryFile(delete=True) as output:
+        HTML(string=html_string).write_pdf(output.name)
+        output.seek(0)
+        pdf_content = output.read()
+
+    # Return PDF as download
+    response = HttpResponse(pdf_content, content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="rental_agreement_{listing_id}.pdf"'
+    return response

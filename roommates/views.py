@@ -98,20 +98,26 @@ def my_profile_view(request):
         profile = request.user.roommate_profile
         return redirect('roommates:detail', pk=profile.pk)
     except RoommateProfile.DoesNotExist:
-        return redirect('roommates:create')
+        return redirect('profile_create')
 
-@login_required
-def update_request_status(request, request_id, new_status):
-    req = get_object_or_404(RoommateRequest, pk=request_id)
-    if request.user != req.profile.user:
-        messages.error(request, "You do not have permission to perform this action.")
-        return redirect('listings:owner_dashboard')
+from django.shortcuts import render, redirect
+from django.contrib.auth.forms import UserCreationForm
+
+def signup_view(request):
     if request.method == 'POST':
-        if new_status.upper() in ['APPROVED', 'DENIED']:
-            req.status = new_status.upper()
-            req.save()
-            messages.success(request, f"Request has been {new_status.lower()}.")
-        else:
-            messages.error(request, "Invalid status.")
-        return redirect('listings:owner_dashboard')
-    return redirect('listings:owner_dashboard')
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('login')
+    else:
+        form = UserCreationForm()
+    return render(request, 'registration/signup.html', {'form': form})
+
+# --- Static pages (add at the very end, below your existing code) ---
+from django.shortcuts import render
+
+def help_view(request):
+    return render(request, 'help.html')
+
+def about_view(request):
+    return render(request, 'about.html')

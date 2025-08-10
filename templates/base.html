@@ -1,62 +1,15 @@
+{% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Samaya Spaces</title>
-    <!-- A little bit of styling to make the nav look cleaner -->
-    <style>
-        nav a, nav form button {
-            margin: 0 10px;
-        }
-        .nav-right {
-            float: right;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>{% block title %}Samaya Spaces{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-    <nav>
-        <!-- Main Site Navigation (Visible to Everyone) -->
-        <a href="{% url 'listing_list' %}">Find a Room</a>
-        <a href="{% url 'profile_list' %}">Find a Roommate</a>
-
-        <!-- User-specific links, floated to the right -->
-        <div class="nav-right">
-            {% if user.is_authenticated %}
-                <!-- This section is for LOGGED-IN users -->
-                <a href="{% url 'owner_dashboard' %}">My Listings & Bookings</a>
-                <a href="{% url 'my_profile' %}">My Roommate Profile</a>
-                
-                <span style="margin: 0 10px;">|</span>
-                
-                <span>Hi, {{ user.username }}!</span>
-
-                <!-- This is the corrected Logout form -->
-                <form action="{% url 'logout' %}" method="post" style="display: inline;">
-                    {% csrf_token %}
-                    <button type="submit" style="background:none; border:none; padding:0; color:blue; text-decoration:underline; cursor:pointer; font-size: 1em;">Logout</button>
-                </form>
-
-            {% else %}
-                <!-- This section is for GUESTS (not logged in) -->
-                <a href="{% url 'login' %}">Login</a>
-                <a href="{% url 'signup' %}">Sign Up</a>
-            {% endif %}
-        </div>
-    </nav>
-    <hr style="clear: both;">
-
-    <!-- Display Django's messages (e.g., success or error notifications) -->
-    {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-            {% endfor %}
-        </ul>
-        <hr>
-    {% endif %}
-
-    <main>
-        {% block content %}
-        {% endblock content %}
-    </main>
+<body class="bg-light">
+  {% block content %}{% endblock %}
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

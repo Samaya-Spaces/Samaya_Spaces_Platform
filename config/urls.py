@@ -1,24 +1,28 @@
-# renting_service/urls.py
+# config/urls.py
 from django.contrib import admin
 from django.urls import path, include
-from django.conf import settings  
-from django.conf.urls.static import static  #<-- ADD THIS IMPORT
-
-# We no longer need the render import here
+from django.conf import settings
+from django.conf.urls.static import static
+from django.views.generic import TemplateView
+from roommates.views import signup_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+    # Authentication
     path('accounts/', include('django.contrib.auth.urls')),
+    path('signup/', signup_view, name='signup'),
+
+    # Static pages
+    path('help/', TemplateView.as_view(template_name='help.html'), name='help'),
+    path('about/', TemplateView.as_view(template_name='about.html'), name='about'),
+
+    # App-specific
     path('accounts/', include('users.urls')),
     path('roommates/', include('roommates.urls')),
-    path('', include('listings.urls')), ]
+    path('bookings/', include('bookings.urls')),
+    path('', include('listings.urls')),  # Homepage
+]
 
-# This is NOT for production! Only for development (DEBUG=True)
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-
-    path('bookings/', include('bookings.urls')),
-
-    # This path is for listings and MUST be last, as it's the catch-all
-    path('', include('listings.urls')),

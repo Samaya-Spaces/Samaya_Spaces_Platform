@@ -40,3 +40,25 @@ def my_profile_view(request):
         return redirect('profile_detail', pk=profile.pk)
     except RoommateProfile.DoesNotExist:
         return redirect('profile_create')
+
+from django.shortcuts import render, redirect
+from django.contrib.auth.forms import UserCreationForm
+
+def signup_view(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('login')
+    else:
+        form = UserCreationForm()
+    return render(request, 'registration/signup.html', {'form': form})
+
+# --- Static pages (add at the very end, below your existing code) ---
+from django.shortcuts import render
+
+def help_view(request):
+    return render(request, 'help.html')
+
+def about_view(request):
+    return render(request, 'about.html')

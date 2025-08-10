@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Your Perfect Rental Room</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                SamayaSpaces
+            </div>
+            
+            <ul class="nav-links">
+                <li><a href="index.html" class="active">HOME</a></li>
+                <li><a href="rooms.html">ROOMS</a></li>
+                <li><a href="roommate.html">ROOMMATE</a></li>
+                <li><a href="rent.html">RENT</a></li>
+                <li><a href="help.html">HELP</a></li>
+                <li><a href="aboutus.html">ABOUT</a></li>
+            </ul>
+            
+            <div class="nav-right">
+                <a href="auth.html" class="auth-links">LOGIN / SIGNUP</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="hero-content">
+                <h1>Find Your Perfect Rental Room with Ease</h1>
+                <p>Discover thousands of verified properties and connect with trusted landlords</p>
+                
+                <div class="search-bar">
+                    <input type="text" placeholder="Enter location, property type, or keywords..." id="searchInput">
+                    <button onclick="handleSearch()">Search</button>
+                </div>
+                
+                <div class="hero-image">
+                    <img src="assets/example1.png" alt="Modern rental property">
+                </div>
+                
+                <div class="stats">
+                    <div class="stat-item">
+                        <h3>50K+</h3>
+                        <p>Properties</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3>30+</h3>
+                        <p>Cities</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3>100K+</h3>
+                        <p>Happy Renters</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Featured Properties -->
+    <section class="featured-properties">
+        <div class="container">
+            <h2 class="section-title">Our most Popular Residences</h2>
+            
+            <div class="property-grid">
+                <div class="property-card">
+                    <div style="position: relative;">
+                        <img src="example2.jpeg" alt="Luxury apartment">
+                        <div class="heart-icon">♡</div>
+                    </div>
+                    <div class="property-info">
+                        <h3>Luxury Studio Apartment</h3>
+                        <p>Downtown District • 2 bed • 1 bath</p>
+                        <div class="property-price">$850 /month</div>
+                    </div>
+                </div>
+                
+                <div class="property-card">
+                    <div style="position: relative;">
+                        <img src="example3.jpeg" alt="Modern house">
+                        <div class="heart-icon">♡</div>
+                    </div>
+                    <div class="property-info">
+                        <h3>Beautiful Family Home</h3>
+                        <p>Suburban Area • 3 bed • 2 bath</p>
+                        <div class="property-price">$1,200 /month</div>
+                    </div>
+                </div>
+                
+                <div class="property-card">
+                    <div style="position: relative;">
+                        <img src="example4.jpeg" alt="Cozy apartment">
+                        <div class="heart-icon">♡</div>
+                    </div>
+                    <div class="property-info">
+                        <h3>Cozy City Apartment</h3>
+                        <p>City Center • 1 bed • 1 bath</p>
+                        <div class="property-price">$950 /month</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solution Section -->
+    <section class="solution-section">
+        <div class="container">
+            <div class="solution-content">
+                <h2>Your Complete Solution for Home Rentals</h2>
+                <p>We provide end-to-end rental solutions with verified properties, secure payments, and dedicated support to make your rental journey seamless and stress-free.</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3>Easy Search and Filter</h3>
+                    <p>Find your ideal property with our advanced search and filtering system. Sort by location, price, amenities, and more to discover properties that match your preferences.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>Verified Listings</h3>
+                    <p>All properties are verified and inspected. We ensure quality and authenticity, so you can trust every listing on our platform.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>Secure Payment</h3>
+                    <p>Safe and secure payment processing with multiple payment options. Your transactions are protected with bank-level security.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Secure Payment Section -->
+    <section class="service-section">
+        <div class="container">
+            <div class="service-content">
+                <div class="service-text">
+                    <h2>Secure Payment</h2>
+                    <p>Make payments safely and securely with our trusted payment gateway. We support multiple payment methods and ensure your financial information is always protected.</p>
+                    <button class="service-button">Learn More</button>
+                </div>
+                <div class="service-image">
+                    <img src="example5.jpeg" alt="Person making secure payment">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Customer Support Section -->
+    <section class="service-section" style="background: white;">
+        <div class="container">
+            <div class="service-content">
+                <div class="service-image">
+                    <img src="example6.jpeg" alt="Customer support team">
+                </div>
+                <div class="service-text">
+                    <h2>24/7 Customer Support</h2>
+                    <p>Our dedicated support team is available round the clock to assist you with any questions or concerns. Get help when you need it most.</p>
+                    <button class="service-button">Contact Support</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Landlord Services Section -->
+    <section class="service-section">
+        <div class="container">
+            <div class="service-content">
+                <div class="service-text">
+                    <h2>Landlord Services</h2>
+                    <p>List your property with us and reach thousands of qualified tenants. We provide comprehensive landlord services including tenant screening, rent collection, and property management.</p>
+                    <button class="service-button" onclick="window.location.href='rent.html'">List Property</button>
+                </div>
+                <div class="service-image">
+                    <img src="example7.jpeg" alt="Landlord services">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-it-works">
+        <div class="container">
+            <h2 class="section-title">How It Works!</h2>
+            <p style="text-align: center; color: #666; margin-bottom: 20px;">Find a perfect home</p>
+            
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h3>Search & Filter</h3>
+                    <p>Browse through thousands of verified properties and use our advanced filters to find your perfect match.</p>
+                </div>
+                
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h3>Visit & Apply</h3>
+                    <p>Schedule a visit to see the property in person and submit your application with required documents.</p>
+                </div>
+                
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h3>Secure Payment</h3>
+                    <p>Complete your booking with secure payment options and get instant confirmation of your rental.</p>
+                </div>
+                
+                <div class="step-card">
+                    <div class="step-number">4</div>
+                    <h3>Move In</h3>
+                    <p>Get your keys and move into your new home with our seamless move-in process and ongoing support.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials">
+        <div class="container">
+            <h2 class="section-title">What Our Users Say</h2>
+            
+            <div class="testimonial-grid">
+                <div class="testimonial-card">
+                    <div class="stars">★★★★★</div>
+                    <div class="testimonial-text">
+                        "Amazing service! Found my dream apartment in just 2 days. The process was smooth and the support team was incredibly helpful."
+                    </div>
+                    <div class="testimonial-author">
+                        <img src="example8.jpeg" alt="Sarah Johnson" class="author-avatar">
+                        <div class="author-info">
+                            <h4>Sarah Johnson</h4>
+                            <p>Marketing Manager</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="stars">★★★★★</div>
+                    <div class="testimonial-text">
+                        "As a landlord, this platform has made property management effortless. Great tenant screening and reliable rent collection."
+                    </div>
+                    <div class="testimonial-author">
+                        <img src="example9.jpeg" alt="Michael Chen" class="author-avatar">
+                        <div class="author-info">
+                            <h4>Michael Chen</h4>
+                            <p>Property Owner</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="stars">★★★★★</div>
+                    <div class="testimonial-text">
+                        "Excellent experience from start to finish. The platform is user-friendly and the properties are exactly as described."
+                    </div>
+                    <div class="testimonial-author">
+                        <img src="example10.jpeg" alt="Emma Davis" class="author-avatar">
+                        <div class="author-info">
+                            <h4>Emma Davis</h4>
+                            <p>Software Engineer</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Customize Your Home Experience</h2>
+                <p>Join thousands of satisfied customers who have found their perfect rental home through our platform.</p>
+                <button class="service-button" onclick="window.location.href='rooms.html'">Start Your Journey</button>
+                
+                <div class="cta-image">
+                    <img src="example11.jpeg" alt="Happy family in their new home">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Company</h3>
+                    <ul>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="#">Our Team</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Press</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Services</h3>
+                    <ul>
+                        <li><a href="rooms.html">Find Rental</a></li>
+                        <li><a href="rent.html">List Property</a></li>
+                        <li><a href="#">Property Management</a></li>
+                        <li><a href="#">Tenant Screening</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="help.html">Help Center</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Community</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Cookie Policy</a></li>
+                        <li><a href="#">Disclaimer</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 SamayaSpaces. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function handleSearch() {
+            const searchInput = document.getElementById('searchInput');
+            const searchTerm = searchInput.value.trim();
+            
+            if (searchTerm) {
+                // Redirect to rooms page with search parameter
+                window.location.href = `rooms.html?search=${encodeURIComponent(searchTerm)}`;
+            } else {
+                alert('Please enter a search term');
+            }
+        }
+
+        // Add enter key support for search
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                handleSearch();
+            }
+        });
+    </script>
+</body>
+</html>

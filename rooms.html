@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Rooms - SamayaSpaces</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="rooms.css">
+
+  
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                SamayaSpaces
+            </div>
+            
+            <ul class="nav-links">
+                <li><a href="index.html">HOME</a></li>
+                <li><a href="rooms.html" class="active">ROOMS</a></li>
+                <li><a href="roommate.html">ROOMMATE</a></li>
+                <li><a href="rent.html">RENT</a></li>
+                <li><a href="help.html">HELP</a></li>
+                <li><a href="about.html">ABOUT</a></li>
+            </ul>
+            
+            <div class="nav-right">
+                <a href="auth.html" class="auth-links">LOGIN / SIGNUP</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <div class="rooms-container">
+            <!-- Location Header -->
+            <section class="location-header">
+                <div class="current-location">
+                    <h2>Your current location</h2>
+                    <div class="location-display" onclick="changeLocation()">
+                        Bouddha, Kathmandu
+                    </div>
+                </div>
+
+                <!-- Search Section -->
+                <div class="search-section">
+                    <div class="search-input-container">
+                        <input type="text" class="search-input" placeholder="Search address, city, location" id="roomSearch">
+                    </div>
+                    <button class="filter-button" onclick="toggleFilters()">Filter</button>
+                </div>
+
+                <!-- Rent Toggle -->
+                <div class="rent-toggle">
+                    <button class="active" onclick="setRentType('need')">I need to rent</button>
+                    <button onclick="setRentType('list')">I want to list</button>
+                </div>
+            </section>
+
+            <!-- Near Your Location Section -->
+            <section class="property-section">
+                <div class="section-header">
+                    <div>
+                        <h2 class="section-title">Near your location</h2>
+                        <span class="property-count">243 properties in Surabaya</span>
+                    </div>
+                    <a href="#" class="see-all">See all</a>
+                </div>
+
+                <div class="property-grid">
+                    <div class="property-card" onclick="viewProperty(1)">
+                        <div class="property-image">
+                            <div class="img-placeholder img-placeholder-1">🏠</div>
+                            <div class="property-rating">
+                                <span class="rating-star">★</span>
+                                4.8 (73)
+                            </div>
+                            <div class="heart-icon">♡</div>
+                        </div>
+                        <div class="property-info">
+                            <h3 class="property-title">Small cottage with great view of bagmati</h3>
+                            <p class="property-location">Kadaghari, Kathmandu</p>
+                            <div class="property-features">
+                                <span class="feature">🛏️ 2 room</span>
+                                <span class="feature">📏 473 m2</span>
+                            </div>
+                            <div class="property-price">
+                                <span class="price">$526 <span class="price-period">/month</span></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="property-card" onclick="viewProperty(2)">
+                        <div class="property-image">
+                            <div class="img-placeholder img-placeholder-2">🏢</div>
+                            <div class="property-rating">
+                                <span class="rating-star">★</span>
+                                4.5 (98)
+                            </div>
+                            <div class="heart-icon">♡</div>
+                        </div>
+                        <div class="property-info">
+                            <h3 class="property-title">Entire Classic modern House in Surabaya</h3>
+                            <p class="property-location">Ahmad Yani, Yonosolo</p>
+                            <div class="property-features">
+                                <span class="feature">🛏️ 3 room</span>
+                                <span class="feature">📏 475 m2</span>
+                            </div>
+                            <div class="property-price">
+                                <span class="price">$785 <span class="price-period">/month</span></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="property-card" onclick="viewProperty(3)">
+                        <div class="property-image">
+                            <div class="img-placeholder img-placeholder-3">🏘️</div>
+                            <div class="property-rating">
+                                <span class="rating-star">★</span>
+                                4.7 (56)
+                            </div>
+                            <div class="heart-icon">♡</div>
+                        </div>
+                        <div class="property-info">
+                            <h3 class="property-title">Modern apartment with city view</h3>
+                            <p class="property-location">Thamel, Kathmandu</p>
+                            <div class="property-features">
+                                <span class="feature">🛏️ 1 room</span>
+                                <span class="feature">📏 350 m2</span>
+                            </div>
+                            <div class="property-price">
+                                <span class="price">$425 <span class="price-period">/month</span></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="property-card" onclick="viewProperty(4)">
+                        <div class="property-image">
+                            <div class="img-placeholder img-placeholder-4">🏡</div>
+                            <div class="property-rating">
+                                <span class="rating-star">★</span>
+                                4.9 (42)
+                            </div>
+                            <div class="heart-icon">♡</div>
+                        </div>
+                        <div class="property-info">
+                            <h3 class="property-title">Cozy family house with garden</h3>
+                            <p class="property-location">Bhaktapur, Kathmandu</p>
+                            <div class="property-features">
+                                <span class="feature">🛏️ 4 room</span>
+                                <span class="feature">📏 580 m2</span>
+                            </div>
+                            <div class="property-price">
+                                <span class="price">$950 <span class="price-period">/month</span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Top Rated Section -->
+            <section class="property-section">
+                <div class="section-header">
+                    <div>
+                        <h2 class="section-title">Top rated</h2>
+                    </div>
+                    <a href="#" class="see-all">See all</a>
+                </div>
+
+                <div class="property-grid">
+                    <div class="property-card" onclick="viewProperty(5)">
+                        <div class="property-image">
+                            <div class="img-placeholder img-placeholder-5">🏠</div>
+                            <div class="property-rating">
+                                <span class="rating-star">★</span>
+                                4.9 (104)
+                            </div>
+                            <div class="heart-icon">♡</div>
+                        </div>
+                        <div class="property-info">
+                            <h3 class="property-title">Entire private villa in Surabaya City</h3>
+                            <p class="property-location">Nasayatan, Near bimat's Villa</p>
+                            <div class="property-features">
+                                <span class="feature">🛏️ 2 room</span>
+                                <span class="feature">📏 488 m2</span>
+                            </div>
+                            <div class="property-price">
+                                <span class="price">$400 <span class="price-period">/month</span></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="property-card" onclick="viewProperty(6)">
+                        <div class="property-image">
+                            <div class="img-placeholder img-placeholder-6">🏢</div>
+                            <div class="property-rating">
+                                <span class="rating-star">★</span>
+                                4.8 (71)
+                            </div>
+                            <div class="heart-icon">♡</div>
+                        </div>
+                        <div class="property-info">
+                            <h3 class="property-title">Modern white and sleek apartment in Surabaya</h3>
+                            <p class="property-location">Malang, Probolinggo</p>
+                            <div class="property-features">
+                                <span class="feature">🛏️ 4 room</span>
+                                <span class="feature">📏 671 m2</span>
+                            </div>
+                            <div class="property-price">
+                                <span class="price">$800 <span class="price-period">/month</span></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="property-card" onclick="viewProperty(7)">
+                        <div class="property-image">
+                            <div class="img-placeholder img-placeholder-1">🏘️</div>
+                            <div class="property-rating">
+                                <span class="rating-star">★</span>
+                                4.6 (89)
+                            </div>
+                            <div class="heart-icon">♡</div>
+                        </div>
+                        <div class="property-info">
+                            <h3 class="property-title">Spacious loft with rooftop terrace</h3>
+                            <p class="property-location">Patan, Lalitpur</p>
+                            <div class="property-features">
+                                <span class="feature">🛏️ 2 room</span>
+                                <span class="feature">📏 420 m2</span>
+                            </div>
+                            <div class="property-price">
+                                <span class="price">$675 <span class="price-period">/month</span></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="property-card" onclick="viewProperty(8)">
+                        <div class="property-image">
+                            <div class="img-placeholder img-placeholder-2">🏡</div>
+                            <div class="property-rating">
+                                <span class="rating-star">★</span>
+                                4.7 (63)
+                            </div>
+                            <div class="heart-icon">♡</div>
+                        </div>
+                        <div class="property-info">
+                            <h3 class="property-title">Traditional house with modern amenities</h3>
+                            <p class="property-location">Kirtipur, Kathmandu</p>
+                            <div class="property-features">
+                                <span class="feature">🛏️ 3 room</span>
+                                <span class="feature">📏 520 m2</span>
+                            </div>
+                            <div class="property-price">
+                                <span class="price">$720 <span class="price-period">/month</span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Host Section -->
+            <section class="host-section">
+                <div class="host-content">
+                    <div class="host-text">
+                        <h2>Want to host your own place?</h2>
+                        <p>Earn passive income by renting or selling your place</p>
+                        <button class="host-button" onclick="window.location.href='rent.html'">Active as Landlord</button>
+                    </div>
+                    <div class="host-image">
+                        <div class="host-placeholder">🏠</div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Company</h3>
+                    <ul>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="#">Our Team</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Press</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Services</h3>
+                    <ul>
+                        <li><a href="rooms.html">Find Rental</a></li>
+                        <li><a href="rent.html">List Property</a></li>
+                        <li><a href="#">Property Management</a></li>
+                        <li><a href="#">Tenant Screening</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="help.html">Help Center</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Community</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Cookie Policy</a></li>
+                        <li><a href="#">Disclaimer</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 SamayaSpaces. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Search functionality
+        document.getElementById('roomSearch').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+
+        function performSearch() {
+            const searchTerm = document.getElementById('roomSearch').value;
+            if (searchTerm.trim()) {
+                alert(`Searching for: ${searchTerm}`);
+                // In a real application, this would filter the properties
+            }
+        }
+
+        // Location change
+        function changeLocation() {
+            alert('Location picker would open here');
+        }
+
+        // Filter toggle
+        function toggleFilters() {
+            alert('Filter panel would open here');
+        }
+
+        // Rent type toggle
+        function setRentType(type) {
+            const buttons = document.querySelectorAll('.rent-toggle button');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            if (type === 'need') {
+                buttons[0].classList.add('active');
+            } else {
+                buttons[1].classList.add('active');
+                window.location.href = 'rent.html';
+            }
+        }
+
+        // Property view
+        function viewProperty(id) {
+            alert(`Opening property details for property ${id}`);
+            // In a real application, this would navigate to property details page
+        }
+
+        // Heart icon toggle
+        document.querySelectorAll('.heart-icon').forEach(heart => {
+            heart.addEventListener('click', function(e) {
+                e.stopPropagation();
+                this.innerHTML = this.innerHTML === '♡' ? '❤️' : '♡';
+            });
+        });
+
+        // Get search parameter from URL if coming from home page
+        window.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const searchTerm = urlParams.get('search');
+            if (searchTerm) {
+                document.getElementById('roomSearch').value = decodeURIComponent(searchTerm);
+                performSearch();
+            }
+        });
+    </script>
+</body>
+</html>

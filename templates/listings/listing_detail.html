@@ -5,52 +5,76 @@
     
     <h1>{{ object.title }}</h1>
     
+    <!-- Display the main photo if it exists -->
     {% if object.main_photo %}
-      <img src="{{ object.main_photo.url }}" alt="{{ object.title }}" style="max-width: 100%; height: auto; margin-bottom: 20px;">
+      <img src="{{ object.main_photo.url }}" alt="{{ object.title }}" style="max-width: 100%; height: auto; margin-bottom: 20px; border-radius: 5px;">
     {% endif %}
 
     <h3>Details:</h3>
     <ul>
-        <li><strong>Price:</strong> Nrs {{ object.price_per_month }} per month</li>
+        <li><strong>Price:</strong> ${{ object.price_per_month }} per month</li>
         <li><strong>Owner:</strong> {{ object.owner.username }}</li>
+        <li><strong>General Location:</strong> {{ object.location }}</li>
     </ul>
 
     <h3>Description:</h3>
     <p>{{ object.description|linebreaks }}</p>
 
-    <hr style="margin: 20px 0;">
+    <!-- =========== MAP CONTAINER AND SCRIPT =========== -->
+    {% if object.latitude and object.longitude %}
+        <h3 style="margin-top: 30px;">Map Location</h3>
+        <div id="map"></div>
+        <script>
+            // This script runs after the page loads. It reads the coordinates
+            // from the Django context and initializes the Leaflet map.
 
+            // Get coordinates from Django template variables
+            const lat = {{ object.latitude }};
+            const lon = {{ object.longitude }};
+
+            // 1. Initialize the map in the 'map' div, and set its view
+            const map = L.map('map').setView([lat, lon], 14); // 14 is a good zoom level for a neighborhood
+
+            // 2. Add a 'tile layer' (the actual map images) from OpenStreetMap
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            }).addTo(map);
+
+            // 3. Add a marker to the map at the listing's coordinates
+            const marker = L.marker([lat, lon]).addTo(map);
+
+            // 4. (Optional) Add a popup to the marker
+            marker.bindPopup("<b>{{ object.title|escapejs }}</b><br>{{ object.location|escapejs }}").openPopup();
+        </script>
+    {% endif %}
+    <!-- ================== END MAP SECTION ================== -->
+
+    <hr style="margin: 30px 0;">
+
+    <!-- Booking Request Button Logic -->
     {% if user.is_authenticated %}
         {% if user == object.owner %}
-            <p><strong>This is your listing.</strong> You can see booking requests on your <a href="{% url 'owner_dashboard' %}">dashboard</a>.</p>
+            <p><strong>This is your listing.</strong> You can see booking requests on your <a href="{% url 'listings:owner_dashboard' %}">dashboard</a>.</p>
         {% else %}
-            <!-- This form is where the error is happening -->
-            <form action="{% url 'create_booking' listing_id=object.pk %}" method="post">
+            <form action="{% url 'bookings:create' listing_id=object.pk %}" method="post">
                 {% csrf_token %}
                 <button type="submit" style="padding: 10px 15px; font-size: 1.1em;">Request to Book This Room</button>
             </form>
         {% endif %}
     {% else %}
-        <p><strong><a href="{% url 'login' %}?next={{ request.path }}">Log in</a> to request a booking or contact the owner.</strong></p>
+        <p><strong><a href="{% url 'login' %}?next={{ request.path }}">Log in</a> to request a booking.</strong></p>
     {% endif %}
 
     <hr style="margin: 20px 0;">
-    
-    {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-            {% endfor %}
-        </ul>
-        <hr>
-    {% endif %}
 
+    <!-- Owner-only Edit/Delete Links -->
     {% if user == object.owner %}
-      <a href="{% url 'listing_update' pk=object.pk %}">Edit This Listing</a> |
-      <a href="{% url 'listing_delete' pk=object.pk %}">Delete This Listing</a>
+      <a href="{% url 'listings:update' pk=object.pk %}">Edit This Listing</a> |
+      <a href="{% url 'listings:delete' pk=object.pk %}">Delete This Listing</a>
     {% endif %}
     
     <br><br>
-    <a href="{% url 'listing_list' %}">← Back to all listings</a>
+    <a href="{% url 'listings:list' %}">← Back to all listings</a>
   </article>
 {% endblock content %}

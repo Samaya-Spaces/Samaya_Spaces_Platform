@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>My Bookings Dashboard</h1>
+<h1>My Listings & Bookings Dashboard</h1>
+<hr>
+<p><a href="{% url 'listings:create' %}">+ Create a New Listing</a></p>
 <hr>
 
 {% for listing in listings %}
@@ -18,12 +20,11 @@
                         | Status: <strong>{{ booking.get_status_display }}</strong>
                         
                         {% if booking.status == 'PENDING' %}
-                        <!-- Approve/Deny Forms -->
-                        <form action="{% url 'update_booking_status' booking.pk 'APPROVED' %}" method="post" style="display: inline;">
+                        <form action="{% url 'bookings:update_status' booking.pk 'APPROVED' %}" method="post" style="display: inline;">
                             {% csrf_token %}
                             <button type="submit">Approve</button>
                         </form>
-                        <form action="{% url 'update_booking_status' booking.pk 'DENIED' %}" method="post" style="display: inline;">
+                        <form action="{% url 'bookings:update_status' booking.pk 'DENIED' %}" method="post" style="display: inline;">
                             {% csrf_token %}
                             <button type="submit">Deny</button>
                         </form>
@@ -37,6 +38,6 @@
         {% endwith %}
     </div>
 {% empty %}
-    <p>You have not created any listings. <a href="{% url 'listing_create' %}">Create one now!</a></p>
+    <p>You have not created any listings yet.</p>
 {% endfor %}
 {% endblock content %}

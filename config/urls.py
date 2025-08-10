@@ -6,7 +6,9 @@ from django.conf.urls.static import static
 from django.views.generic import TemplateView
 from roommates.views import signup_view
 
+# This is the main URL switchboard for your entire project.
 urlpatterns = [
+    # Core Django and User apps
     path('admin/', admin.site.urls),
 
     # Authentication
@@ -22,6 +24,21 @@ urlpatterns = [
     path('roommates/', include('roommates.urls')),
     path('bookings/', include('bookings.urls')),
     path('', include('listings.urls')),  # Homepage
+]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
+
+    # Our Feature Apps
+    path('roommates/', include('roommates.urls')),
+
+    # ===================================================================
+    path('bookings/', include('bookings.urls')),
+    # ===================================================================
+
+  
+    path('', include('listings.urls')),
+    path('chat/', include('chat.urls')),
 ]
 
 if settings.DEBUG:

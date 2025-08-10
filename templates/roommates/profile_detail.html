@@ -1,17 +1,56 @@
 {% extends "base.html" %}
+
 {% block content %}
-<article>
+<article style="max-width: 700px; margin: auto;">
     <h2>Roommate Profile for: {{ object.user.username }}</h2>
+    
     <p><strong>Budget:</strong> ${{ object.budget }}/month</p>
-    <p><strong>Preferred Move-in Date:</strong> {{ object.preferred_move_in_date|date:"F d, Y" }}</p>
-    <p><strong>Location Preference:</strong> {{ object.location_preference }}</p>
+    
+    {% if object.preferred_move_in_date %}
+        <p><strong>Preferred Move-in Date:</strong> {{ object.preferred_move_in_date|date:"F d, Y" }}</p>
+    {% endif %}
+
+    <p><strong>Preferred Location:</strong> {{ object.location }}</p>
+    
+    <!-- Display the map for the roommate profile's location -->
+    {% if object.latitude and object.longitude %}
+        <div id="map"></div>
+        <script>
+            const lat = {{ object.latitude|safe }};
+            const lon = {{ object.longitude|safe }};
+            const map = L.map('map').setView([lat, lon], 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap'
+            }).addTo(map);
+            L.marker([lat, lon]).addTo(map).bindPopup("<b>{{ object.user.username|escapejs }}'s preferred area</b>").openPopup();
+        </script>
+    {% endif %}
+
     <hr>
     <h3>About Me:</h3>
-    <p>{{ object.bio }}</p>
+    <p>{{ object.bio|linebreaks }}</p>
+    <hr>
 
-    {% if user == object.user %}
-        <a href="{% url 'profile_update' pk=object.pk %}">Edit My Profile</a>
+    <!-- Connection Request Form -->
+    {% if user.is_authenticated and user != object.user %}
+        <h3>Interested in connecting?</h3>
+        <form method="post">
+            {% csrf_token %}
+            <p>Why do you think you'd be a good roommate?</p>
+            {{ form.as_p }}
+            <button type="submit">Send Connection Request</button>
+        </form>
+        <hr>
     {% endif %}
+
+    <!-- Owner-only Edit Link -->
+    {% if user == object.user %}
+        <a href="{% url 'roommates:update' pk=object.pk %}">Edit My Profile</a>
+        <hr>
+    {% endif %}
+    
+    <!-- Back Link -->
+    <a href="{% url 'roommates:list' %}">← Back to all roommate profiles</a>
+
 </article>
-<a href="{% url 'profile_list' %}">Back to all profiles</a>
 {% endblock content %}

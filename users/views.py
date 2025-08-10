@@ -1,11 +1,7 @@
-from django.shortcuts import render
-
-# Create your views here.
+# users/views.py
 from django.shortcuts import render, redirect
 from django.contrib.auth import login
 from .forms import CustomUserCreationForm
-
-
 
 def signup(request):
     if request.method == 'POST':
@@ -13,8 +9,8 @@ def signup(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            # Use the correct name for our new homepage
-            return redirect('listing_list') 
+            # THIS REDIRECT MUST BE NAMESPACED
+            return redirect('listings:list')
     else:
         form = CustomUserCreationForm()
     return render(request, 'registration/signup.html', {'form': form})

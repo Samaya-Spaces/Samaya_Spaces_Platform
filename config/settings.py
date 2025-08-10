@@ -16,6 +16,7 @@ ALLOWED_HOSTS = []  # Keep it empty for local dev
 
 # Application definition
 INSTALLED_APPS = [
+    'channels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -29,6 +30,8 @@ INSTALLED_APPS = [
     'bookings.apps.BookingsConfig',
     'roommates.apps.RoommatesConfig',
     'widget_tweaks',
+    'chat.apps.ChatConfig',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -102,11 +105,29 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # Custom user model
 AUTH_USER_MODEL = 'users.User'
 
-# Redirect after login/logout
-LOGIN_REDIRECT_URL = 'listing_list'
-LOGOUT_REDIRECT_URL = 'listing_list'
+# Redirect URLs
+LOGIN_REDIRECT_URL = 'listings:list'
+LOGOUT_REDIRECT_URL = 'listings:list'
+
 
 # Default auto field
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
+ASGI_APPLICATION = 'config.asgi.application'
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
+
+# Twilio Configuration
+TWILIO_ACCOUNT_SID = os.getenv('TWILIO_ACCOUNT_SID')
+TWILIO_AUTH_TOKEN = os.getenv('TWILIO_AUTH_TOKEN')
+TWILIO_PHONE_NUMBER = os.getenv('TWILIO_PHONE_NUMBER')
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}

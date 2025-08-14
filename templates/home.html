@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% comment %} {% extends 'base.html' %}
 
 {% block content %}
   <h1>All Listings</h1>
@@ -25,4 +25,121 @@
     <p>No listings have been posted yet. Be the first!</p>
   {% endfor %}
 
+{% endblock content %} {% endcomment %}
+
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+  :root{
+    --hero1:#3b82f6;      /* blue-500 */
+    --hero2:#1d4ed8;      /* blue-700 */
+    --ink:#0f172a;        /* slate-900 */
+    --muted:#64748b;      /* slate-500 */
+    --line:#e2e8f0;       /* slate-200 */
+    --card:#ffffff;
+    --accent:#2563eb;     /* blue-600 */
+  }
+
+  body, main, .content, #content { margin:0; padding:0; }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    background: radial-gradient(1200px 500px at 50% -10%, rgba(255,255,255,.15) 0, rgba(255,255,255,0) 70%),
+                linear-gradient(180deg, var(--hero1) 0%, var(--hero2) 100%);
+    color:#fff;
+    padding: 56px 16px 44px;
+    text-align:center;
+    position: relative;
+  }
+  .hero h1{
+    font-size: clamp(28px, 5vw, 56px);
+    line-height:1.05;
+    font-weight: 800;
+    margin: 0 0 14px;
+  }
+  .hero p.sub{
+    margin: 0 auto 24px;
+    max-width: 860px;
+    font-size: clamp(14px, 2.2vw, 20px);
+    color: rgba(255,255,255,.95);
+  }
+
+  .hero::after{
+    content:""; position:absolute; left:0; right:0; bottom:-1px; height: 54px;
+    background: linear-gradient(to bottom, rgba(2,6,23,0) 0%, #fff 78%);
+  }
+
+  /* ---------- LISTINGS ---------- */
+  .list-wrap{
+    max-width: 1150px;
+    padding: 0 16px;
+    margin: 22px auto 42px;
+  }
+  .list-grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  .card{
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 10px 24px rgba(15,23,42,.08);
+    transition: transform .12s ease, box-shadow .12s ease;
+  }
+  .card:hover{ transform: translateY(-2px); box-shadow: 0 16px 32px rgba(15,23,42,.14); }
+  .thumb{ height: 190px; background:#f1f5f9; overflow:hidden; display:block; }
+  .thumb img{ width:100%; height:100%; object-fit:cover; display:block; transition: transform .28s ease; }
+  .card:hover .thumb img{ transform: scale(1.03); }
+
+  .body{ padding: 14px; }
+  .title{ margin:0 0 4px; font-size: 18px; font-weight: 700; }
+  .title a{ color: var(--ink); text-decoration: none; }
+  .title a:hover{ text-decoration: underline; }
+  .owner{ margin: 0 0 10px; color: var(--muted); font-size: 13px; }
+  .price{
+    display:inline-block; font-weight: 800; color: var(--accent);
+    background: rgba(37,99,235,.08);
+    border: 1px solid rgba(37,99,235,.2);
+    border-radius: 999px; padding: 6px 10px; font-size: 14px;
+  }
+
+  .empty{
+    text-align:center; color: var(--muted);
+    margin: 22px 0; border: 1px dashed var(--line);
+    border-radius: 12px; padding: 20px;
+  }
+</style>
+
+<!-- HERO -->
+<section class="hero">
+  <h1>All Listings</h1>
+  <p class="sub">Browse through our available rental properties and find your next home.</p>
+</section>
+
+<!-- LISTINGS -->
+<div class="list-wrap">
+  <div class="list-grid">
+    {% for listing in listings %}
+      <article class="card">
+        {% if listing.main_photo %}
+          <a class="thumb" href="{{ listing.get_absolute_url }}">
+            <img src="{{ listing.main_photo.url }}" alt="{{ listing.title }}">
+          </a>
+        {% endif %}
+        <div class="body">
+          <h2 class="title"><a href="{{ listing.get_absolute_url }}">{{ listing.title }}</a></h2>
+          <p class="owner">By: {{ listing.owner.username }}</p>
+          {% if listing.price_per_month %}
+            <div class="price">${{ listing.price_per_month }} / month</div>
+          {% endif %}
+        </div>
+      </article>
+    {% empty %}
+      <div class="empty">No listings have been posted yet. Be the first!</div>
+    {% endfor %}
+  </div>
+</div>
 {% endblock content %}

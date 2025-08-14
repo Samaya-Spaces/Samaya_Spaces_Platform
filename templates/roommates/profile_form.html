@@ -1,9 +1,105 @@
 {% extends "base.html" %}
+
 {% block content %}
-<h2>My Roommate Profile</h2>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Save Profile</button>
-</form>
+<style>
+  :root{
+    --bg:#f7f7fb;
+    --card:#ffffff;
+    --text:#1f1f29;
+    --muted:#6b6f76;
+    --primary:#5b3df5;
+    --primary-700:#4a2fe6;
+    --ring:#e7e8ee;
+    --shadow:0 10px 30px rgba(12,18,38,.12);
+  }
+
+  .profile-edit-wrap{
+    background:var(--bg);
+    padding:24px 0 32px;
+  }
+
+  .edit-card{
+    width:100%;
+    max-width:900px;
+    margin:0 auto;
+    background:var(--card);
+    border:1px solid var(--ring);
+    border-radius:16px;
+    box-shadow:var(--shadow);
+    overflow:hidden;
+  }
+
+  .edit-head{
+    background: linear-gradient(135deg, #4169e1, #1e3a8a);
+    color:#fff;
+    padding:18px 22px;
+  }
+  .edit-title{
+    margin:0; font-size:22px; font-weight:800;
+  }
+  .edit-sub{
+    margin:6px 0 0 0; font-size:14px; opacity:.95;
+  }
+
+  .edit-body{
+    padding:22px;
+  }
+
+  /* Style Django form rendered with {{ form.as_p }} */
+  .edit-form p{ margin:0 0 12px 0; }
+  .edit-form label{ display:block; font-weight:700; font-size:13px; color:#111827; margin-bottom:6px; }
+  .edit-form input[type="text"],
+  .edit-form input[type="email"],
+  .edit-form input[type="tel"],
+  .edit-form input[type="number"],
+  .edit-form input[type="date"],
+  .edit-form input[type="password"],
+  .edit-form textarea,
+  .edit-form select{
+    width:100%;
+    min-height:40px;
+    padding:10px 12px;
+    border:1px solid var(--ring);
+    border-radius:10px;
+    background:#fff;
+    color:var(--text);
+    font:14px/1.4 system-ui, sans-serif;
+    outline:none;
+    transition:border-color .15s ease, box-shadow .15s ease;
+  }
+  .edit-form textarea{ min-height:110px; resize:vertical; }
+  .edit-form input:focus,
+  .edit-form textarea:focus,
+  .edit-form select:focus{
+    border-color:var(--primary);
+    box-shadow:0 0 0 2px rgba(91,61,245,.2);
+  }
+
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center;
+    height:42px; padding:0 16px; border-radius:999px; border:none;
+    background:var(--primary); color:#fff; font-weight:700; font-size:14px;
+    cursor:pointer; box-shadow:0 6px 16px rgba(91,61,245,.25);
+    transition:transform .06s ease, background .15s ease, opacity .15s ease;
+  }
+  .btn:hover{ background:var(--primary-700); }
+  .btn:active{ transform:translateY(1px); }
+</style>
+
+<section class="profile-edit-wrap">
+  <article class="edit-card">
+    <header class="edit-head">
+      <h2 class="edit-title">My Roommate Profile</h2>
+      <p class="edit-sub">Update your details and preferences</p>
+    </header>
+
+    <div class="edit-body">
+      <form method="post" class="edit-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn">Save Profile</button>
+      </form>
+    </div>
+  </article>
+</section>
 {% endblock content %}

@@ -1,27 +1,535 @@
 {% extends 'base.html' %}
-
 {% block content %}
-  <h1>All Listings</h1>
 
-  {% for listing in listings %}
-    <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 15px;">
-      
-      {% if listing.main_photo %}
-        <a href="{{ listing.get_absolute_url }}">
-          <img src="{{ listing.main_photo.url }}" alt="{{ listing.title }}" width="300">
-        </a>
-      {% endif %}
+<style>
+  /* ===== HERO (no image) ===== */
+  * { box-sizing: border-box; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
 
-      <h2><a href="{{ listing.get_absolute_url }}">{{ listing.title }}</a></h2>
-      <p>By: {{ listing.owner.username }}</p>
+  header.hero-v2 {
+    background: linear-gradient(135deg, #4169e1, #1e3a8a);
+    color: #fff;
+    padding: 60px 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-content { position: relative; z-index: 2; }
+  .hero-content h1 {
+    font-size: clamp(2.2rem, 4vw + 1rem, 4rem);
+    line-height: 1.15;
+    margin-bottom: 22px;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+  }
+  .hero-content p {
+    font-size: 1.2rem;
+    margin-bottom: 36px;
+    opacity: 0.95;
+  }
+  .search-bar {
+    background: #fff; border-radius: 999px; padding: 14px 16px;
+    display: flex; align-items: center; max-width: 680px; margin: 0 auto 28px;
+    gap: 12px; box-shadow: 0 18px 60px rgba(0,0,0,0.18);
+  }
+  .search-bar input {
+    flex: 1; border: none; padding: 12px 14px; font-size: 16px; outline: none; color: #333; border-radius: 999px;
+  }
+  .search-bar button {
+    background: #5a4cf3; color: #fff; border: none; padding: 12px 22px; border-radius: 999px;
+    cursor: pointer; font-weight: 700; font-size: 0.98rem; transition: transform .04s ease, opacity .15s ease;
+  }
+  .search-bar button:hover { opacity: 0.92; }
+  .search-bar button:active { transform: translateY(1px); }
+  .stats {
+    display: flex; justify-content: space-around; gap: 18px; margin-top: 30px; padding: 28px 16px;
+    background: rgba(255,255,255,0.12); border-radius: 16px; backdrop-filter: blur(10px);
+    box-shadow: 0 24px 80px rgba(0,0,0,0.28);
+  }
+  .stat-item { text-align: center; }
+  .stat-item h3 { font-size: clamp(1.6rem, 2.5vw + 0.6rem, 2.4rem); margin-bottom: 6px; font-weight: 800; }
 
-      {% if listing.price_per_month %}
-        <p><b>Nrs {{ listing.price_per_month }} per month</b></p>
-      {% endif %}
-      
+  @media (max-width: 768px) {
+    .hero-content h1 { font-size: 2.2rem; }
+    .hero-content p { font-size: 1rem; }
+    .search-bar { flex-direction: column; gap: 12px; padding: 14px; }
+    .search-bar button { width: 100%; }
+    .stats { flex-direction: column; gap: 14px; }
+  }
+  header.hero-v2{
+    /* pull the section out of the centered layout so it bleeds full width */
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    width: 100vw;
+  }
+  
+  /* keep inner content nicely constrained */
+  header.hero-v2 .container{
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  /* 1) Kill the page wrapper's top padding/border so the hero can touch the nav */
+main, .content, #content {
+  padding-top: 0 !important;
+  border-top: 0 !important;
+}
+
+/* 2) Make sure the hero itself doesn’t add any extra top margin */
+header.hero-v2 { margin-top: 0; }
+
+/* 3) (You already have full-bleed; keep it here for clarity) */
+header.hero-v2{
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  width: 100vw;
+}
+header.hero-v2 .container{
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+
+  /* spacing before listings */
+  .listings-spacer { height: 16px; }
+
+  /* Section heading centered */
+  .center-heading {
+    text-align: center;
+    font-size: clamp(1.8rem, 2.5vw, 2.4rem);
+    margin: 34px 0 26px;
+    font-weight: 800;
+    color:rgb(3, 3, 15);
+  }
+
+  /* ===== Card grid like the mock ===== */
+  .property-section {
+    background: #f7fafc;      /* light gray like screenshot band */
+    padding: 28px 0 46px;
+  }
+
+  .property-grid {
+    max-width: 1150px;
+    margin: 0 auto;
+    padding: 0 16px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+  }
+  @media (max-width: 1100px) {
+    .property-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 680px) {
+    .property-grid { grid-template-columns: 1fr; }
+  }
+
+  .property-card {
+    position: relative;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 18px 38px rgba(0,0,0,0.10);
+    overflow: hidden;
+    transition: transform .12s ease, box-shadow .12s ease;
+  }
+  .property-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 24px 48px rgba(0,0,0,0.14);
+  }
+
+  .property-thumb {
+    display:block;
+    height: 150px;
+    background: #eef2f7;
+    overflow:hidden;
+  }
+  .property-thumb img {
+    width:100%; height:100%; object-fit: cover; display:block; transition: transform .28s ease;
+  }
+  .property-card:hover .property-thumb img { transform: scale(1.03); }
+
+  .heart-icon {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 28px; height: 28px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.92);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    display:flex; align-items:center; justify-content:center;
+    font-size: 16px; color: #7a7a7a;
+    user-select: none;
+    pointer-events: none;   /* purely decorative; no functionality change */
+  }
+
+  .property-info { padding: 18px 20px 22px; }
+  .property-title {
+    margin: 0 0 8px;
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: #2a2a85;
+  }
+  .property-title a { color: inherit; text-decoration: none; }
+  .property-title a:hover { text-decoration: underline; }
+
+  .property-meta {
+    margin: 0 0 16px;
+    color: #6b7280;           /* slate-500 */
+    font-size: 0.95rem;
+  }
+
+  .property-price {
+    font-weight: 800;
+    font-size: 1.25rem;
+    color: #5a4cf3;           /* purple-ish like screenshot */
+  }
+
+  /* ====== NEW: Solution section ====== */
+  .solution-section {
+    padding: 60px 0;
+    background: #fff;
+  }
+  .solution-content {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  .solution-content h2 {
+    font-size: 2.2rem;
+    color:rgb(2, 7, 20);
+    margin-bottom: 14px;
+    font-weight: 800;
+  }
+  .solution-content p {
+    font-size: 1.06rem;
+    color: #666;
+    max-width: 680px;
+    margin: 0 auto;
+  }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+    max-width: 1150px;
+    margin: 0 auto;
+    padding: 0 16px;
+  }
+  @media (max-width: 900px) {
+    .features-grid { grid-template-columns: 1fr; }
+  }
+  .feature-card {
+    text-align: center;
+    padding: 28px;
+    background: #f8fafc;
+    border-radius: 16px;
+    transition: transform 0.2s ease;
+  }
+  .feature-card:hover { transform: translateY(-4px); }
+  .feature-card h3 {
+    font-size: 1.2rem;
+    color:rgb(2, 6, 15);
+    margin-bottom: 10px;
+    font-weight: 700;
+  }
+  .feature-card p {
+    color: #666;
+    line-height: 1.6;
+  }
+
+
+  /* === SERVICE SECTIONS === */
+  .service-section { padding: 80px 0; background: #f8fafc; }
+  .service-content { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+  .service-button { background: #4169e1; color: white; border: none; padding: 15px 30px; border-radius: 25px; cursor: pointer; }
+  .service-button:hover { background: #3557c7; }
+  .service-image img { width: 100%; max-width: 400px; height: 300px; object-fit: cover; border-radius: 15px; }
+
+  /* === HOW IT WORKS === */
+  .how-it-works { padding: 80px 0; background: white; text-align: center; }
+  .steps-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-top: 50px; }
+  .step-number { background: #4169e1; color: white; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
+
+  /* === TESTIMONIALS === */
+    .testimonials { padding: 80px 0; background: #f8fafc; }
+    .testimonial-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 50px; }
+    .testimonial-card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+    .testimonial-text { font-style: italic; margin-bottom: 20px; color: #666; }
+    .stars { color: #ffd700; margin-bottom: 15px; }
+
+    /* === CTA === */
+    .cta-section { padding: 80px 0; background: linear-gradient(135deg, #4169e1, #1e3a8a); color: white; text-align: center; }
+    .cta-image img { width: 100%; max-width: 500px; height: 300px; object-fit: cover; border-radius: 15px; }
+    /* Make the CTA background span edge-to-edge */
+    .cta-section {
+      /* full-bleed */
+      margin-left: calc(50% - 50vw);
+      margin-right: calc(50% - 50vw);
+      width: 100vw;
+    
+      /* optional: if you want the gradient to touch the section below with no white gap */
+      margin-bottom: 0;
+    }
+    
+    /* Keep inner content nicely constrained */
+    .cta-section .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;   /* keep your usual side padding for content */
+    }
+    
+    /* Remove page wrapper spacing that creates the white band around sections */
+    main, .content, #content {
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+    }
+    
+    /* If there's still a thin white line below the CTA, a border/padding is causing it: */
+    .cta-section,
+    .cta-section * {
+      border: 0;
+    }
+    
+
+</style>
+
+<!-- HERO -->
+<header class="hero-v2">
+  <div class="container">
+    <div class="hero-content">
+      <h1>Find Your Perfect Rental Room with Ease</h1>
+      <p>Discover thousands of verified properties and connect with trusted landlords</p>
+
+      <form class="search-bar" method="get" action="">
+        <input type="text" name="q" placeholder="Enter location, property type, or keywords..." value="{{ request.GET.q }}">
+        <button type="submit">Search</button>
+      </form>
+
+      <div class="stats">
+        <div class="stat-item">
+          <h3>50K+</h3>
+          <p>Properties</p>
+        </div>
+        <div class="stat-item">
+          <h3>30+</h3>
+          <p>Cities</p>
+        </div>
+        <div class="stat-item">
+          <h3>100K+</h3>
+          <p>Happy Renters</p>
+        </div>
+      </div>
     </div>
-    <hr>
-  {% empty %}
-    <p>No listings have been posted yet. Be the first!</p>
-  {% endfor %}
+  </div>
+</header>
+
+<div class="listings-spacer"></div>
+
+<section class="property-section">
+  <h1 class="center-heading">Our Most Popular Residences</h1>
+
+  <div class="property-grid">
+    {% for listing in listings %}
+      <article class="property-card">
+        {% if listing.main_photo %}
+          <a class="property-thumb" href="{{ listing.get_absolute_url }}">
+            <img src="{{ listing.main_photo.url }}" alt="{{ listing.title }}">
+          </a>
+        {% else %}
+          <a class="property-thumb" href="{{ listing.get_absolute_url }}">
+            <img src="https://images.unsplash.com/photo-1600585152220-90363fe7e115?q=80&w=1200&auto=format&fit=crop"
+                 alt="{{ listing.title }}">
+          </a>
+        {% endif %}
+
+        <!-- decorative heart (no JS, no behavior change) -->
+        <div class="heart-icon">♡</div>
+
+        <div class="property-info">
+          <h2 class="property-title">
+            <a href="{{ listing.get_absolute_url }}">{{ listing.title }}</a>
+          </h2>
+
+          <!-- Using owner as meta text (we don’t invent data like beds/baths) -->
+          <p class="property-meta">By {{ listing.owner.username }}</p>
+
+          {% if listing.price_per_month %}
+            <div class="property-price">Nrs {{ listing.price_per_month }} /month</div>
+          {% endif %}
+        </div>
+      </article>
+    {% empty %}
+      <p style="text-align:center; color:#6b7280;">No listings have been posted yet. Be the first!</p>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- ====== NEW: Solution Section (copied & adapted) ====== -->
+<section class="solution-section">
+  <div class="container">
+    <div class="solution-content">
+      <h2>Your Complete Solution for Home Rentals</h2>
+      <p>We provide end-to-end rental solutions with verified properties, secure payments, and dedicated support to make your rental journey seamless and stress-free.</p>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <h3>Easy Search and Filter</h3>
+        <p>Find your ideal property with our advanced search and filtering system. Sort by location, price, amenities, and more to discover properties that match your preferences.</p>
+      </div>
+
+      <div class="feature-card">
+        <h3>Verified Listings</h3>
+        <p>All properties are verified and inspected. We ensure quality and authenticity, so you can trust every listing on our platform.</p>
+      </div>
+
+      <div class="feature-card">
+        <h3>Secure Payment</h3>
+        <p>Safe and secure payment processing with multiple payment options. Your transactions are protected with bank-level security.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== Secure Payment section ====== -->
+<section class="service-section">
+  <div class="container">
+    <div class="service-content">
+      <div class="service-text">
+        <h2>Secure Payment</h2>
+        <p>Make payments safely and securely with our trusted payment gateway. We support multiple payment methods and ensure your financial information is always protected.</p>
+        <button class="service-button">Learn More</button>
+      </div>
+     <!-- <div class="service-image">
+        <img src="https://images.unsplash.com/photo-1588776814546-74b8c72e32f1?crop=entropy&cs=tinysrgb&fit=crop&w=1200&q=80" 
+             alt="Person holding Visa card and white device"> -->
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== 24/7 customer support  ====== -->
+<section class="service-section" style="background: white;">
+  <div class="container">
+    <div class="service-content">
+      <div class="service-image">
+        <!-- <img src="example6.jpeg" alt="Customer support team"> -->
+      </div> 
+      <div class="service-text">
+        <h2>24/7 Customer Support</h2>
+        <p>Our dedicated support team is available round the clock to assist you with any questions or concerns. Get help when you need it most.</p>
+        <button class="service-button">Contact Support</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== Landlord Services Section  ====== -->
+<!-- Landlord Services Section -->
+<section class="service-section">
+  <div class="container">
+    <div class="service-content">
+      <div class="service-text">
+        <h2>Landlord Services</h2>
+        <p>List your property with us and reach thousands of qualified tenants. We provide comprehensive landlord services including tenant screening, rent collection, and property management.</p>
+        <button class="service-button" onclick="window.location.href='rent.html'">List Property</button>
+      </div>
+      <div class="service-image">
+        <!-- <img src="example7.jpeg" alt="Landlord services"> -->
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How It Works -->
+<section class="how-it-works">
+  <div class="container">
+    <h2 class="section-title">How It Works!</h2>
+    <p style="text-align: center; color: #666; margin-bottom: 20px;"> Find a perfect home</p>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-number">1</div>
+        <h3>Search & Filter</h3>
+        <p>Browse through thousands of verified properties and use our advanced filters to find your perfect match.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-number">2</div>
+        <h3>Visit & Apply</h3>
+        <p>Schedule a visit to see the property in person and submit your application with required documents.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-number">3</div>
+        <h3>Secure Payment</h3>
+        <p>Complete your booking with secure payment options and get instant confirmation of your rental.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-number">4</div>
+        <h3>Move In</h3>
+        <p>Get your keys and move into your new home with our seamless move-in process and ongoing support.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials -->
+<section class="testimonials">
+  <div class="container">
+    <h2 class="section-title" style="text-align: center;">What Our Users Say</h2>
+    <div class="testimonial-grid">
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <div class="testimonial-text">
+          "Amazing service! Found my dream apartment in just 2 days. The process was smooth and the support team was incredibly helpful."
+        </div>
+        <div class="testimonial-author">
+          <!-- <img src="example8.jpeg" alt="Sarah Johnson" class="author-avatar"> -->
+          <div class="author-info">
+            <h4>Sarah Johnson</h4>
+            <p>Marketing Manager</p>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <div class="testimonial-text">
+          "As a landlord, this platform has made property management effortless. Great tenant screening and reliable rent collection."
+        </div>
+        <div class="testimonial-author">
+          <!-- <img src="example9.jpeg" alt="Michael Chen" class="author-avatar"> -->
+          <div class="author-info">
+            <h4>Michael Chen</h4>
+            <p>Property Owner</p>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <div class="testimonial-text">
+          "Excellent experience from start to finish. The platform is user-friendly and the properties are exactly as described."
+        </div>
+        <div class="testimonial-author">
+         <!-- <img src="example10.jpeg" alt="Emma Davis" class="author-avatar"> -->
+          <div class="author-info">
+            <h4>Emma Davis</h4>
+            <p>Software Engineer</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+  <div class="container">
+    <div class="cta-content">
+      <h2>Customize Your Home Experience</h2>
+      <p>Join thousands of satisfied customers who have found their perfect rental home through our platform.</p>
+      <button class="service-button" onclick="window.location.href='rooms.html'">Start Your Journey</button>
+      <div class="cta-image">
+        <!-- <img src="example11.jpeg" alt="Happy family in their new home"> -->
+      </div>
+    </div>
+  </div>
+</section>
+
 {% endblock content %}

@@ -1,43 +1,199 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>My Listings & Bookings Dashboard</h1>
-<hr>
-<p><a href="{% url 'listings:create' %}">+ Create a New Listing</a></p>
-<hr>
+<style>
+  :root{
+    --bg:#f7f7fb;
+    --card:#ffffff;
+    --text:#1f1f29;
+    --muted:#6b6f76;
+    --primary:#5b3df5;
+    --primary-700:#4a2fe6;
+    --ring:#e7e8ee;
+    --shadow:0 10px 30px rgba(12,18,38,.12);
 
-{% for listing in listings %}
-    <div style="margin-bottom: 30px;">
-        <h3>Listing: <a href="{{ listing.get_absolute_url }}">{{ listing.title }}</a></h3>
-        
-        <h4>Booking Requests for this Listing:</h4>
+    --danger:#e11d48;      /* rose-600 */
+    --danger-700:#be123c;  /* rose-700 */
+  }
+
+  .dash-wrap{
+    background:var(--bg);
+    padding:24px 0 32px;
+  }
+
+  .dash-head{
+    max-width:1100px;
+    margin:0 auto 16px;
+    padding:0 16px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+  }
+  .dash-title{
+    margin:0;
+    font-size:28px;
+    font-weight:800;
+    color:#111827;
+  }
+
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center;
+    height:42px; padding:0 16px;
+    border-radius:999px; border:none;
+    background:var(--primary); color:#fff;
+    font-weight:700; font-size:14px;
+    cursor:pointer;
+    box-shadow:0 6px 16px rgba(91,61,245,.25);
+    transition:transform .06s ease, background .15s ease, opacity .15s ease;
+    text-decoration:none;
+    white-space:nowrap;
+  }
+  .btn:hover{ background:var(--primary-700); }
+  .btn:active{ transform:translateY(1px); }
+
+  .btn-outline{
+    background:#fff; color:#1f1f29; border:1px solid var(--ring);
+    box-shadow:none;
+  }
+  .btn-outline:hover{ border-color:#d6d7de; }
+
+  .btn-danger{
+    background:var(--danger);
+    box-shadow:0 6px 16px rgba(225,29,72,.25);
+  }
+  .btn-danger:hover{ background:var(--danger-700); }
+
+  .btn-small{
+    height:36px; padding:0 14px; font-weight:700; font-size:13px;
+  }
+
+  .listing-card{
+    max-width:1100px;
+    margin:0 auto 16px;
+    background:var(--card);
+    border:1px solid var(--ring);
+    border-radius:16px;
+    box-shadow:var(--shadow);
+    overflow:hidden;
+  }
+  .listing-head{
+    padding:16px 20px;
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    border-bottom:1px solid var(--ring);
+  }
+  .listing-title{
+    margin:0; font-size:18px; font-weight:800; color:#111827;
+  }
+  .listing-title a{ color:inherit; text-decoration:none; }
+  .listing-title a:hover{ text-decoration:underline; }
+
+  .booking-block{ padding:16px 20px; }
+  .booking-block h3{
+    margin:0 0 10px 0; font-size:16px; color:#1e3a8a; font-weight:800;
+  }
+
+  .booking-list{
+    list-style:none; margin:0; padding:0;
+    display:grid; gap:10px;
+  }
+  .booking-item{
+    border:1px solid var(--ring);
+    border-radius:12px;
+    padding:12px;
+    background:#fafbff;
+    display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px;
+  }
+  .booking-main{ display:flex; align-items:center; gap:12px; flex:1; min-width:240px; }
+  .who{ color:#111827; }
+  .who strong{ font-weight:800; }
+
+  .status{ margin-left:auto; }
+  .badge{
+    display:inline-block;
+    padding:4px 10px;
+    border-radius:999px;
+    font-size:12px; font-weight:700;
+    border:1px solid transparent;
+  }
+  .badge-pending{ background:#fff7ed; color:#9a3412; border-color:#fed7aa; }   /* amber */
+  .badge-approved{ background:#ecfdf5; color:#065f46; border-color:#a7f3d0; } /* emerald */
+  .badge-denied{ background:#fef2f2; color:#991b1b; border-color:#fecaca; }   /* red */
+
+  .booking-actions{ display:flex; align-items:center; gap:8px; }
+
+  .muted{ color:var(--muted); }
+
+  .empty-card{
+    max-width:1100px; margin:20px auto 0; padding:24px;
+    background:#fff; border:1px solid var(--ring); border-radius:16px; box-shadow:var(--shadow);
+    text-align:center;
+  }
+  .empty-card h3{ margin:0 0 10px 0; font-size:18px; font-weight:800; color:#111827; }
+</style>
+
+<section class="dash-wrap">
+  <header class="dash-head">
+    <h1 class="dash-title">My Listings & Bookings</h1>
+    <a class="btn" href="{% url 'listings:create' %}">+ Create a New Listing</a>
+  </header>
+
+  {% for listing in listings %}
+    <article class="listing-card">
+      <div class="listing-head">
+        <h2 class="listing-title">Listing: <a href="{{ listing.get_absolute_url }}">{{ listing.title }}</a></h2>
+      </div>
+
+      <div class="booking-block">
+        <h3>Booking Requests for this Listing</h3>
+
         {% with bookings=listing.bookings.all %}
-            {% if bookings %}
-                <ul>
-                    {% for booking in bookings %}
-                    <li>
-                        Request from: <strong>{{ booking.requester.username }}</strong>
-                        | Status: <strong>{{ booking.get_status_display }}</strong>
-                        
-                        {% if booking.status == 'PENDING' %}
-                        <form action="{% url 'bookings:update_status' booking.pk 'APPROVED' %}" method="post" style="display: inline;">
-                            {% csrf_token %}
-                            <button type="submit">Approve</button>
-                        </form>
-                        <form action="{% url 'bookings:update_status' booking.pk 'DENIED' %}" method="post" style="display: inline;">
-                            {% csrf_token %}
-                            <button type="submit">Deny</button>
-                        </form>
-                        {% endif %}
-                    </li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <p>No booking requests for this listing yet.</p>
-            {% endif %}
+          {% if bookings %}
+            <ul class="booking-list">
+              {% for booking in bookings %}
+                <li class="booking-item">
+                  <div class="booking-main">
+                    <div class="who">
+                      Request from: <strong>{{ booking.requester.username }}</strong>
+                    </div>
+
+                    <div class="status">
+                      <span class="badge
+                        {% if booking.status == 'PENDING' %}badge-pending
+                        {% elif booking.status == 'APPROVED' %}badge-approved
+                        {% elif booking.status == 'DENIED' %}badge-denied
+                        {% endif %}">
+                        {{ booking.get_status_display }}
+                      </span>
+                    </div>
+                  </div>
+
+                  {% if booking.status == 'PENDING' %}
+                  <div class="booking-actions">
+                    <form action="{% url 'bookings:update_status' booking.pk 'APPROVED' %}" method="post" class="inline-form" style="display:inline;">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-small">Approve</button>
+                    </form>
+                    <form action="{% url 'bookings:update_status' booking.pk 'DENIED' %}" method="post" class="inline-form" style="display:inline;">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-small btn-danger">Deny</button>
+                    </form>
+                  </div>
+                  {% endif %}
+                </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p class="muted">No booking requests for this listing yet.</p>
+          {% endif %}
         {% endwith %}
+      </div>
+    </article>
+  {% empty %}
+    <div class="empty-card">
+      <h3>You have not created any listings yet.</h3>
+      <a class="btn" href="{% url 'listings:create' %}">Create your first listing</a>
     </div>
-{% empty %}
-    <p>You have not created any listings yet.</p>
-{% endfor %}
+  {% endfor %}
+</section>
 {% endblock content %}

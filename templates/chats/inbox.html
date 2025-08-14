@@ -1,37 +1,124 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div style="max-width: 800px; margin: auto;">
-    <h1>My Conversations</h1>
-    <hr>
-    
-    {% if conversations %}
-        <ul style="list-style: none; padding: 0;">
-            {% for conv in conversations %}
-                <li style="border: 1px solid #ddd; padding: 15px; margin-bottom: 10px; border-radius: 5px;">
-                    <a href="{% url 'chat:room' conv.id %}" style="text-decoration: none; color: #333;">
-                        <h4>
-                            Conversation with:
-                            {% for user in conv.participants.all %}
-                                {% if user != request.user %}
-                                    {{ user.username }}
-                                {% endif %}
-                            {% endfor %}
-                        </h4>
-                        <p style="color: #777;">
-                            {% if conv.messages.last %}
-                                <strong>{{ conv.messages.last.author.username }}:</strong> 
-                                {{ conv.messages.last.content|truncatechars:50 }}
-                            {% else %}
-                                <em>No messages yet.</em>
-                            {% endif %}
-                        </p>
-                    </a>
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>You have no active conversations. Approve a booking or roommate request to start chatting!</p>
-    {% endif %}
-</div>
+<style>
+  :root{
+    --bg:#f7f7fb;
+    --card:#ffffff;
+    --text:#1f1f29;
+    --muted:#6b6f76;
+    --primary:#5b3df5;
+    --primary-700:#4a2fe6;
+    --ring:#e7e8ee;
+    --shadow:0 10px 30px rgba(12,18,38,.12);
+  }
+
+  .chat-wrap{
+    background:var(--bg);
+    padding:24px 0 32px;
+  }
+
+  .chat-head{
+    max-width:1100px; margin:0 auto 16px; padding:0 16px;
+  }
+  .chat-title{
+    margin:0; font-size:28px; font-weight:800; color:#111827;
+  }
+
+  .chat-list{
+    max-width:1100px; margin:0 auto; padding:0 16px;
+    list-style:none; padding-left:0;
+    display:grid; gap:12px;
+  }
+
+  .chat-item{ margin:0; }
+
+  .chat-card{
+    background:var(--card);
+    border:1px solid var(--ring);
+    border-radius:16px;
+    box-shadow:var(--shadow);
+    padding:14px 16px;
+    display:flex; align-items:center; gap:14px;
+    text-decoration:none; color:var(--text);
+    transition: transform .06s ease, border-color .15s ease, background .15s ease;
+  }
+  .chat-card:hover{
+    border-color:#d6d7de;
+    transform: translateY(-1px);
+  }
+
+  .chat-avatar{
+    width:42px; height:42px; border-radius:999px;
+    background:#eef2ff; display:flex; align-items:center; justify-content:center;
+    font-size:18px;
+    flex:0 0 auto;
+  }
+
+  .chat-main{ flex:1 1 auto; min-width:0; }
+  .chat-name{
+    margin:0 0 4px 0; font-size:16px; font-weight:800; color:#111827;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  .chat-preview{
+    margin:0; color:var(--muted); font-size:14px;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+
+  .chat-cta{
+    margin-left:auto; color:#4a4ee6; font-weight:700; font-size:14px;
+  }
+
+  .empty-card{
+    max-width:1100px; margin:20px auto 0; padding:24px 16px;
+    background:#fff; border:1px solid var(--ring); border-radius:16px; box-shadow:var(--shadow);
+    text-align:center;
+  }
+  .empty-card h3{ margin:0 0 8px 0; font-size:18px; font-weight:800; color:#111827; }
+  .muted{ color:var(--muted); }
+</style>
+
+<section class="chat-wrap">
+  <header class="chat-head">
+    <h1 class="chat-title">My Conversations</h1>
+  </header>
+
+  {% if conversations %}
+    <ul class="chat-list">
+      {% for conv in conversations %}
+        <li class="chat-item">
+          <a href="{% url 'chat:room' conv.id %}" class="chat-card">
+            <div class="chat-avatar" aria-hidden="true">💬</div>
+
+            <div class="chat-main">
+              <h4 class="chat-name">
+                Conversation with:
+                {% for user in conv.participants.all %}
+                  {% if user != request.user %}
+                    {{ user.username }}
+                  {% endif %}
+                {% endfor %}
+              </h4>
+              <p class="chat-preview">
+                {% if conv.messages.last %}
+                  <strong>{{ conv.messages.last.author.username }}:</strong>
+                  {{ conv.messages.last.content|truncatechars:50 }}
+                {% else %}
+                  <em>No messages yet.</em>
+                {% endif %}
+              </p>
+            </div>
+
+            <div class="chat-cta">Open →</div>
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <div class="empty-card">
+      <h3>No conversations yet</h3>
+      <p class="muted">Approve a booking or roommate request to start chatting!</p>
+    </div>
+  {% endif %}
+</section>
 {% endblock content %}

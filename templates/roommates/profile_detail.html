@@ -1,56 +1,220 @@
 {% extends "base.html" %}
 
 {% block content %}
-<article style="max-width: 700px; margin: auto;">
-    <h2>Roommate Profile for: {{ object.user.username }}</h2>
-    
-    <p><strong>Budget:</strong> ${{ object.budget }}/month</p>
-    
-    {% if object.preferred_move_in_date %}
-        <p><strong>Preferred Move-in Date:</strong> {{ object.preferred_move_in_date|date:"F d, Y" }}</p>
-    {% endif %}
+<style>
+  :root{
+    --bg:#f7f7fb;
+    --card:#ffffff;
+    --text:#1f1f29;
+    --muted:#6b6f76;
+    --primary:#5b3df5;
+    --primary-700:#4a2fe6;
+    --ring:#e7e8ee;
+    --shadow:0 10px 30px rgba(12,18,38,.12);
+  }
 
-    <p><strong>Preferred Location:</strong> {{ object.location }}</p>
-    
-    <!-- Display the map for the roommate profile's location -->
-    {% if object.latitude and object.longitude %}
-        <div id="map"></div>
-        <script>
-            const lat = {{ object.latitude|safe }};
-            const lon = {{ object.longitude|safe }};
-            const map = L.map('map').setView([lat, lon], 13);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  .profile-wrap{
+    background:var(--bg);
+    padding:24px 0 32px;
+  }
+
+  .profile-card{
+    width:100%;
+    max-width:1100px;
+    margin:0 auto;
+    background:var(--card);
+    border:1px solid var(--ring);
+    border-radius:16px;
+    box-shadow:var(--shadow);
+    overflow:hidden;
+  }
+
+  .profile-head{
+    background: linear-gradient(135deg, #4169e1, #1e3a8a);
+    color:#fff;
+    padding:18px 22px;
+  }
+  .profile-title{
+    margin:0; font-size:22px; font-weight:800;
+  }
+  .profile-sub{
+    margin:6px 0 0 0; font-size:14px; opacity:.95;
+  }
+
+  .profile-body{
+    padding:20px 22px;
+    display:grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap:20px;
+  }
+  @media (max-width: 900px){
+    .profile-body{ grid-template-columns: 1fr; }
+  }
+
+  /* Left column: details + about */
+  .details-card{
+    background:#fff;
+    border:1px solid var(--ring);
+    border-radius:14px;
+    padding:16px;
+  }
+  .section-title{
+    margin:0 0 12px 0;
+    font-size:16px; font-weight:800; color:#1e3a8a;
+  }
+
+  .info-grid{
+    display:grid; gap:10px;
+  }
+  .info-item{
+    background:#fafbff;
+    border:1px solid var(--ring);
+    border-radius:10px;
+    padding:10px 12px;
+    font-size:14px; color:var(--text);
+  }
+  .info-item strong{ color:#111827; }
+
+  .about-card{
+    margin-top:14px;
+    background:#fff;
+    border:1px solid var(--ring);
+    border-radius:14px;
+    padding:16px;
+  }
+  .about-text{ color:#374151; line-height:1.6; }
+
+  /* Right column: map + form/actions */
+  .map-card, .action-card{
+    background:#fff;
+    border:1px solid var(--ring);
+    border-radius:14px;
+    padding:16px;
+  }
+  #map{
+    height:320px; width:100%;
+    border-radius:10px;
+    overflow:hidden;
+  }
+
+  /* Buttons & links (theme-consistent) */
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center;
+    height:42px; padding:0 16px; border-radius:999px; border:none;
+    background:var(--primary); color:#fff; font-weight:700; font-size:14px;
+    cursor:pointer; box-shadow:0 6px 16px rgba(91,61,245,.25);
+    transition:transform .06s ease, background .15s ease, opacity .15s ease;
+    text-decoration:none;
+  }
+  .btn:hover{ background:var(--primary-700); }
+  .btn:active{ transform:translateY(1px); }
+
+  .btn-outline{
+    background:#fff; color:#1f1f29; border:1px solid var(--ring);
+    box-shadow:none;
+  }
+  .btn-outline:hover{ border-color:#d6d7de; }
+
+  .btn-row{ display:flex; flex-wrap:wrap; gap:10px; }
+
+  .back-link{
+    display:inline-block; margin-top:16px; color:#4a4ee6; text-decoration:none; font-weight:600;
+  }
+  .back-link:hover{ text-decoration:underline; }
+
+  /* Style Django form rendered with {{ form.as_p }} */
+  .profile-form p{ margin:0 0 10px 0; }
+  .profile-form label{ font-weight:700; font-size:13px; display:block; margin-bottom:6px; color:#111827; }
+  .profile-form input[type="text"],
+  .profile-form input[type="email"],
+  .profile-form input[type="tel"],
+  .profile-form input[type="number"],
+  .profile-form textarea,
+  .profile-form select{
+    width:100%; min-height:40px; padding:10px 12px;
+    border:1px solid var(--ring); border-radius:10px; outline:none;
+    font:14px/1.4 system-ui, sans-serif;
+    transition:border-color .15s ease, box-shadow .15s ease;
+    background:#fff; color:var(--text);
+  }
+  .profile-form textarea{ min-height:110px; resize:vertical; }
+  .profile-form input:focus,
+  .profile-form textarea:focus,
+  .profile-form select:focus{
+    border-color:var(--primary);
+    box-shadow:0 0 0 2px rgba(91,61,245,.2);
+  }
+</style>
+
+<section class="profile-wrap">
+  <article class="profile-card">
+    <header class="profile-head">
+      <h2 class="profile-title">Roommate Profile</h2>
+      <p class="profile-sub">for <strong>{{ object.user.username }}</strong></p>
+    </header>
+
+    <div class="profile-body">
+      <!-- LEFT: details + about -->
+      <div>
+        <div class="details-card">
+          <h3 class="section-title">Details</h3>
+          <div class="info-grid">
+            <div class="info-item"><strong>Budget:</strong> ${{ object.budget }}/month</div>
+            <div class="info-item"><strong>Preferred Location:</strong> {{ object.location }}</div>
+            {% if object.preferred_move_in_date %}
+              <div class="info-item"><strong>Preferred Move-in Date:</strong> {{ object.preferred_move_in_date|date:"F d, Y" }}</div>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="about-card">
+          <h3 class="section-title">About Me</h3>
+          <div class="about-text">{{ object.bio|linebreaks }}</div>
+        </div>
+
+        {% if user == object.user %}
+          <div class="btn-row" style="margin-top:12px;">
+            <a class="btn btn-outline" href="{% url 'roommates:update' pk=object.pk %}">Edit My Profile</a>
+          </div>
+        {% endif %}
+
+        <a class="back-link" href="{% url 'roommates:list' %}">← Back to all roommate profiles</a>
+      </div>
+
+      <!-- RIGHT: map + connection form -->
+      <div>
+        {% if object.latitude and object.longitude %}
+          <div class="map-card" style="margin-bottom:14px;">
+            <h3 class="section-title">Preferred Area</h3>
+            <div id="map"></div>
+          </div>
+
+          <script>
+            (function(){
+              const lat = {{ object.latitude|safe }};
+              const lon = {{ object.longitude|safe }};
+              const map = L.map('map').setView([lat, lon], 13);
+              L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '© OpenStreetMap'
-            }).addTo(map);
-            L.marker([lat, lon]).addTo(map).bindPopup("<b>{{ object.user.username|escapejs }}'s preferred area</b>").openPopup();
-        </script>
-    {% endif %}
+              }).addTo(map);
+              L.marker([lat, lon]).addTo(map).bindPopup("<b>{{ object.user.username|escapejs }}'s preferred area</b>");
+            })();
+          </script>
+        {% endif %}
 
-    <hr>
-    <h3>About Me:</h3>
-    <p>{{ object.bio|linebreaks }}</p>
-    <hr>
-
-    <!-- Connection Request Form -->
-    {% if user.is_authenticated and user != object.user %}
-        <h3>Interested in connecting?</h3>
-        <form method="post">
-            {% csrf_token %}
-            <p>Why do you think you'd be a good roommate?</p>
-            {{ form.as_p }}
-            <button type="submit">Send Connection Request</button>
-        </form>
-        <hr>
-    {% endif %}
-
-    <!-- Owner-only Edit Link -->
-    {% if user == object.user %}
-        <a href="{% url 'roommates:update' pk=object.pk %}">Edit My Profile</a>
-        <hr>
-    {% endif %}
-    
-    <!-- Back Link -->
-    <a href="{% url 'roommates:list' %}">← Back to all roommate profiles</a>
-
-</article>
+        {% if user.is_authenticated and user != object.user %}
+          <div class="action-card">
+            <h3 class="section-title">Interested in connecting?</h3>
+            <p class="muted" style="margin-top:-6px;">Tell them why you’d make a great roommate.</p>
+            <form method="post" class="profile-form">
+              {% csrf_token %}
+              {{ form.as_p }}
+              <button type="submit" class="btn" style="margin-top:6px;">Send Connection Request</button>
+            </form>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </article>
+</section>
 {% endblock content %}

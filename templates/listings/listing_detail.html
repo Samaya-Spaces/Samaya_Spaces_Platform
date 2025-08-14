@@ -1,80 +1,237 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <article style="max-width: 800px; margin: auto;">
-    
-    <h1>{{ object.title }}</h1>
-    
-    <!-- Display the main photo if it exists -->
-    {% if object.main_photo %}
-      <img src="{{ object.main_photo.url }}" alt="{{ object.title }}" style="max-width: 100%; height: auto; margin-bottom: 20px; border-radius: 5px;">
-    {% endif %}
+<style>
+  :root{
+    --bg:#f7f7fb;
+    --card:#ffffff;
+    --text:#1f1f29;
+    --muted:#6b6f76;
+    --primary:#5b3df5;
+    --primary-700:#4a2fe6;
+    --ring:#e7e8ee;
+    --shadow:0 10px 30px rgba(12,18,38,.12);
+  }
+  *{box-sizing:border-box}
+  body{color:var(--text)}
 
-    <h3>Details:</h3>
-    <ul>
-        <li><strong>Price:</strong> ${{ object.price_per_month }} per month</li>
-        <li><strong>Owner:</strong> {{ object.owner.username }}</li>
-        <li><strong>General Location:</strong> {{ object.location }}</li>
-    </ul>
+  /* Page wrap to echo signup aesthetic */
+  .listing-wrap{
+    background:var(--bg);
+    padding:24px 0 32px;
+  }
 
-    <h3>Description:</h3>
-    <p>{{ object.description|linebreaks }}</p>
+  /* Main card (two columns like signup’s media/panel) */
+  .listing-card{
+    width:100%;
+    max-width:1100px;
+    margin:0 auto;
+    background:var(--card);
+    box-shadow:var(--shadow);
+    border-radius:16px;
+    overflow:hidden;
+    display:grid;
+    grid-template-columns:1.2fr 1fr;
+    gap:0;
+  }
 
-    <!-- =========== MAP CONTAINER AND SCRIPT =========== -->
-    {% if object.latitude and object.longitude %}
-        <h3 style="margin-top: 30px;">Map Location</h3>
-        <div id="map"></div>
-        <script>
-            // This script runs after the page loads. It reads the coordinates
-            // from the Django context and initializes the Leaflet map.
+  /* Left: media area */
+  .listing-media{
+    background:#eef2f7;
+    min-height:420px;
+    display:flex;
+    align-items:stretch;
+    justify-content:center;
+    overflow:hidden;
+  }
+  .listing-media img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+  }
 
-            // Get coordinates from Django template variables
-            const lat = {{ object.latitude }};
-            const lon = {{ object.longitude }};
+  /* Right: info panel */
+  .listing-panel{
+    padding:24px 28px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    overflow:auto;
+  }
 
-            // 1. Initialize the map in the 'map' div, and set its view
-            const map = L.map('map').setView([lat, lon], 14); // 14 is a good zoom level for a neighborhood
+  .listing-title{
+    margin:0;
+    font-size:28px;
+    line-height:1.2;
+    font-weight:800;
+    color:#111827;
+  }
+  .listing-sub{
+    color:var(--muted);
+    font-size:14px;
+    margin-top:-4px;
+  }
 
-            // 2. Add a 'tile layer' (the actual map images) from OpenStreetMap
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            }).addTo(map);
+  .detail-list{
+    margin:8px 0 0;
+    padding:0;
+    list-style:none;
+    display:grid;
+    gap:8px;
+  }
+  .detail-list li{
+    background:#fafbff;
+    border:1px solid var(--ring);
+    border-radius:10px;
+    padding:10px 12px;
+    font-size:14px;
+  }
+  .detail-list strong{color:#111827}
 
-            // 3. Add a marker to the map at the listing's coordinates
-            const marker = L.marker([lat, lon]).addTo(map);
+  .desc{
+    margin-top:6px;
+    color:#374151;
+    line-height:1.6;
+  }
 
-            // 4. (Optional) Add a popup to the marker
-            marker.bindPopup("<b>{{ object.title|escapejs }}</b><br>{{ object.location|escapejs }}").openPopup();
-        </script>
-    {% endif %}
-    <!-- ================== END MAP SECTION ================== -->
+  /* Buttons (matching signup) */
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center;
+    height:42px; padding:0 16px; border-radius:999px; border:none;
+    background:var(--primary); color:#fff; font-weight:700; font-size:14px;
+    cursor:pointer; box-shadow:0 6px 16px rgba(91,61,245,.25);
+    transition:transform .06s ease, background .15s ease, opacity .15s ease;
+    text-decoration:none;
+  }
+  .btn:hover{ background:var(--primary-700); }
+  .btn:active{ transform:translateY(1px); }
 
-    <hr style="margin: 30px 0;">
+  .btn-outline{
+    background:#fff; color:#1f1f29; border:1px solid var(--ring);
+    box-shadow:none;
+  }
+  .btn-outline:hover{
+    border-color:#d6d7de;
+  }
 
-    <!-- Booking Request Button Logic -->
-    {% if user.is_authenticated %}
-        {% if user == object.owner %}
-            <p><strong>This is your listing.</strong> You can see booking requests on your <a href="{% url 'listings:owner_dashboard' %}">dashboard</a>.</p>
-        {% else %}
-            <form action="{% url 'bookings:create' listing_id=object.pk %}" method="post">
-                {% csrf_token %}
-                <button type="submit" style="padding: 10px 15px; font-size: 1.1em;">Request to Book This Room</button>
-            </form>
+  .btn-row{
+    display:flex; flex-wrap:wrap; gap:10px; margin-top:6px;
+  }
+
+  .back-link{
+    display:inline-block; margin-top:14px; color:#4a4ee6; text-decoration:none; font-weight:600;
+  }
+  .back-link:hover{ text-decoration:underline; }
+
+  /* Map card styled like a secondary card */
+  .map-card{
+    width:100%;
+    max-width:1100px;
+    margin:18px auto 0;
+    background:#fff;
+    border-radius:16px;
+    box-shadow:var(--shadow);
+    overflow:hidden;
+  }
+  .map-head{
+    padding:16px 20px; font-weight:700; color:#1e3a8a; border-bottom:1px solid var(--ring);
+  }
+  #map{
+    height:380px; width:100%;
+  }
+
+  /* Dividers replaced with soft spacing instead of <hr> */
+  .soft-divider{ height:6px; }
+
+  @media (max-width: 900px){
+    .listing-card{ grid-template-columns:1fr; }
+    .listing-media{ min-height:260px; }
+  }
+</style>
+
+<section class="listing-wrap">
+  <div class="listing-card">
+    <!-- MEDIA (left) -->
+    <div class="listing-media" aria-hidden="{{ object.main_photo|yesno:'false,true' }}">
+      {% if object.main_photo %}
+        <img src="{{ object.main_photo.url }}" alt="{{ object.title }}">
+      {% else %}
+        <!-- Keep a clean empty state if no image -->
+      {% endif %}
+    </div>
+
+    <!-- PANEL (right) -->
+    <div class="listing-panel">
+      <h1 class="listing-title">{{ object.title }}</h1>
+      {% if object.location %}
+        <div class="listing-sub">Location: {{ object.location }}</div>
+      {% endif %}
+
+      <ul class="detail-list">
+        {% if object.price_per_month %}
+          <li><strong>Price:</strong> Nrs {{ object.price_per_month }} per month</li>
         {% endif %}
-    {% else %}
-        <p><strong><a href="{% url 'login' %}?next={{ request.path }}">Log in</a> to request a booking.</strong></p>
-    {% endif %}
+        <li><strong>Owner:</strong> {{ object.owner.username }}</li>
+        {% if object.location %}
+          <li><strong>General Location:</strong> {{ object.location }}</li>
+        {% endif %}
+      </ul>
 
-    <hr style="margin: 20px 0;">
+      {% if object.description %}
+        <div class="desc">
+          {{ object.description|linebreaks }}
+        </div>
+      {% endif %}
 
-    <!-- Owner-only Edit/Delete Links -->
-    {% if user == object.owner %}
-      <a href="{% url 'listings:update' pk=object.pk %}">Edit This Listing</a> |
-      <a href="{% url 'listings:delete' pk=object.pk %}">Delete This Listing</a>
-    {% endif %}
-    
-    <br><br>
-    <a href="{% url 'listings:list' %}">← Back to all listings</a>
-  </article>
+      <div class="btn-row">
+        {% if user.is_authenticated %}
+          {% if user == object.owner %}
+            <a class="btn btn-outline" href="{% url 'listings:owner_dashboard' %}">View Booking Requests</a>
+          {% else %}
+            <form action="{% url 'bookings:create' listing_id=object.pk %}" method="post" style="display:inline;">
+              {% csrf_token %}
+              <button type="submit" class="btn">Request to Book This Room</button>
+            </form>
+          {% endif %}
+        {% else %}
+          <a class="btn" href="{% url 'login' %}?next={{ request.path }}">Log in to request a booking</a>
+        {% endif %}
+      </div>
+
+      {% if user == object.owner %}
+        <div class="btn-row">
+          <a class="btn btn-outline" href="{% url 'listings:update' pk=object.pk %}">Edit This Listing</a>
+          <a class="btn btn-outline" href="{% url 'listings:delete' pk=object.pk %}">Delete This Listing</a>
+        </div>
+      {% endif %}
+
+      <a class="back-link" href="{% url 'listings:list' %}">← Back to all listings</a>
+    </div>
+  </div>
+
+  {% if object.latitude and object.longitude %}
+    <div class="map-card">
+      <div class="map-head">Map Location</div>
+      <div id="map"></div>
+    </div>
+
+    <script>
+      // Leaflet map (Leaflet is already loaded in base.html)
+      (function(){
+        const lat = {{ object.latitude }};
+        const lon = {{ object.longitude }};
+        const map = L.map('map').setView([lat, lon], 14);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+          attribution: '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        }).addTo(map);
+
+        const marker = L.marker([lat, lon]).addTo(map);
+        marker.bindPopup("<b>{{ object.title|escapejs }}</b><br>{{ object.location|escapejs }}");
+      })();
+    </script>
+  {% endif %}
+</section>
 {% endblock content %}

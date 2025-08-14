@@ -1,11 +1,132 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h2>Delete Listing</h2>
-  <p>Are you sure you want to delete "{{ object.title }}"?</p>
-  <form method="post">
-    {% csrf_token %}
-    <button type="submit">Confirm Delete</button>
-    <a href="{{ object.get_absolute_url }}">Cancel</a>
-  </form>
+<style>
+  :root {
+    --bg:#f7f7fb;
+    --card:#ffffff;
+    --text:#1f1f29;
+    --muted:#6b6f76;
+    --primary:#5b3df5;
+    --primary-700:#4a2fe6;
+    --ring:#e7e8ee;
+    --shadow:0 10px 30px rgba(12,18,38,.12);
+
+    /* extras for destructive action */
+    --danger:#e11d48;        /* rose-600 */
+    --danger-700:#be123c;    /* rose-700 */
+  }
+
+  .delete-wrap{
+    background:var(--bg);
+    min-height: calc(100vh - 1px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+  }
+
+  .confirm-card{
+    width:100%;
+    max-width: 720px;
+    background:var(--card);
+    box-shadow:var(--shadow);
+    border-radius:16px;
+    overflow:hidden;
+  }
+
+  .confirm-head{
+    background: linear-gradient(135deg, #4169e1, #1e3a8a);
+    color:#fff;
+    padding:18px 22px;
+    font-weight:800;
+    font-size:18px;
+  }
+
+  .confirm-body{
+    padding:22px;
+    color:var(--text);
+  }
+
+  .confirm-title{
+    margin:0 0 6px 0;
+    font-size:24px;
+    font-weight:800;
+    color:#111827;
+  }
+
+  .confirm-sub{
+    color:var(--muted);
+    font-size:14px;
+    margin-bottom:14px;
+  }
+
+  .callout{
+    background:#fff3f2;
+    border:1px solid #fcd3d1;
+    color:#8a1f16;
+    border-radius:10px;
+    padding:12px 14px;
+    font-size:14px;
+    margin:12px 0 18px;
+  }
+
+  .btn-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-top:8px;
+  }
+
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center;
+    height:42px; padding:0 16px; border-radius:999px; border:none;
+    background:var(--primary); color:#fff; font-weight:700; font-size:14px;
+    cursor:pointer; box-shadow:0 6px 16px rgba(91,61,245,.25);
+    transition:transform .06s ease, background .15s ease, opacity .15s ease;
+    text-decoration:none;
+  }
+  .btn:hover{ background:var(--primary-700); }
+  .btn:active{ transform:translateY(1px); }
+
+  .btn-danger{
+    background: var(--danger);
+    box-shadow: 0 6px 16px rgba(225,29,72,.25);
+  }
+  .btn-danger:hover{ background: var(--danger-700); }
+
+  .btn-outline{
+    background:#fff; color:#1f1f29; border:1px solid var(--ring);
+    box-shadow:none;
+  }
+  .btn-outline:hover{ border-color:#d6d7de; }
+</style>
+
+<section class="delete-wrap">
+  <article class="confirm-card" role="dialog" aria-labelledby="del-title" aria-describedby="del-desc">
+    <header class="confirm-head">Delete Listing</header>
+
+    <div class="confirm-body">
+      <h1 id="del-title" class="confirm-title">Are you sure?</h1>
+      <p id="del-desc" class="confirm-sub">
+        You’re about to delete: <strong>“{{ object.title }}”</strong>
+      </p>
+
+      <div class="callout">
+        This action can’t be undone. If you proceed, the listing and its details will be removed.
+      </div>
+
+      <form method="post">
+        {% csrf_token %}
+        <div class="btn-row">
+          <!-- SUBMIT keeps the same behavior and URL (POST to this view) -->
+          <button type="submit" class="btn btn-danger">Confirm Delete</button>
+
+          <!-- CANCEL is just a link back to the listing detail -->
+          <a href="{{ object.get_absolute_url }}" class="btn btn-outline">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </article>
+</section>
 {% endblock content %}

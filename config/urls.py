@@ -2,6 +2,9 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.generic import TemplateView
+
+
 
 # This is the main URL switchboard for your entire project.
 urlpatterns = [
@@ -9,6 +12,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),
     path('accounts/', include('users.urls')),
+    path("accounts/", include('allauth.urls')),
+    
 
     # Our Feature Apps
     path('roommates/', include('roommates.urls')),

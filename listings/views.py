@@ -15,6 +15,13 @@ from .models import Listing
 from .forms import ListingForm
 from .filters import ListingFilter #<-- IMPORT THE NEW FILTER
 from roommates.models import RoommateProfile # Import for the dashboard view
+from django.template.loader import render_to_string
+from django.http import HttpResponse
+from django.contrib.staticfiles import finders
+from django.shortcuts import get_object_or_404
+from weasyprint import HTML, CSS
+import tempfile
+import datetime
 
 # --- MODIFIED LIST VIEW ---
 class ListingListView(ListView):
@@ -93,3 +100,41 @@ class OwnerDashboardView(LoginRequiredMixin, ListView):
         except RoommateProfile.DoesNotExist:
             context['roommate_requests'] = None
         return context
+    
+#PDF generation view
+def rental_agreement_pdf(request, listing_id):
+    listing = get_object_or_404(Listing, pk=listing_id)
+
+    # Data for the template
+    context = {
+        "listing": listing,
+        "tenant": getattr(listing, "tenant", None),  # adapt to your fields
+        "landlord": getattr(listing, "landlord", None),
+        "agreement_date": getattr(listing, "agreement_date", None),
+        "address": getattr(listing, "address", None),
+        "rent": getattr(listing, "rent", None),
+        "deposit": getattr(listing, "deposit", None),
+        "terms": getattr(listing, "terms", []),  # list of bullet points
+        "logo_url": request.build_absolute_uri("/static/img/logo.png"),  # optional
+    }
+
+    # Render HTML string from a normal Django template
+    html_string = render_to_string("listings/rental_agreement.html", context)
+
+    # (Optional) separate CSS file—resolve an absolute path for WeasyPrint
+    css_path = finders.find("css/pdf.css")  # e.g., static/css/pdf.css
+    stylesheets = [CSS(filename=css_path)] if css_path else None
+
+    # Build absolute base URL so relative URLs (e.g., images) work in the PDF
+    base_url = request.build_absolute_uri("/")
+
+    # Generate PDF bytes
+    pdf_bytes = HTML(string=html_string, base_url=base_url).write_pdf(
+        stylesheets=stylesheets
+    )
+
+    # Return as a download
+    filename = f"rental_agreement_{listing_id}.pdf"
+    response = HttpResponse(pdf_bytes, content_type="application/pdf")
+    response["Content-Disposition"] = f'attachment; filename="{filename}"'
+    return response

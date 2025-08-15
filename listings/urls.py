@@ -1,6 +1,7 @@
 # listings/urls.py
 
 from django.urls import path
+from .import views
 from .views import (
     ListingListView,
     ListingDetailView,
@@ -27,4 +28,9 @@ urlpatterns = [
     path('<int:pk>/', ListingDetailView.as_view(), name='detail'),
     path('<int:pk>/edit/', ListingUpdateView.as_view(), name='update'),
     path('<int:pk>/delete/', ListingDeleteView.as_view(), name='delete'),
+     path(
+        "agreements/<int:listing_id>/rental.pdf",
+        views.rental_agreement_pdf,
+        name="rental_agreement_pdf",
+    ),
 ]

@@ -1,7 +1,6 @@
-
-
 {% extends "base.html" %}
 {% load static %}
+{% load socialaccount %}
 
 {% block content %}
 <!DOCTYPE html>
@@ -42,10 +41,10 @@
     h1 { font-size: 28px; margin: 0; }
     .sub { color: var(--muted); margin-bottom: 6px; font-size: 14px; }
 
+    /* form */
     form { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 14px; margin-top: 4px; }
     .full { grid-column: 1 / -1; }
     label { font-weight: 600; font-size: 13px; margin-bottom: 4px; display: block; }
-
     input {
       width: 100%; height: 38px; border: 1px solid var(--ring); border-radius: 8px;
       padding: 6px 10px; font-size: 14px; background: #fff; outline: none;
@@ -71,9 +70,20 @@
     /* Error styles */
     .err { color: #b42318; font-size: 12px; margin-top: 4px; }
     .field-error { border-color: #b42318 !important; box-shadow: 0 0 0 2px rgba(180,35,24,.15) !important; }
-
-    /* Non-field errors block */
     .non-field-errors { grid-column: 1 / -1; padding: 10px 12px; border-radius: 8px; background: #fff3f2; color: #8a1f16; font-size: 13px; }
+
+    /* Compact Google button */
+    .oauth--sm { margin: 6px 0 10px; display: flex; justify-content: flex-start; }
+    .btn-google--sm {
+      width: auto; height: 36px; padding: 0 12px;
+      border-radius: 8px; border: 1px solid #dadce0;
+      background: #fff; color: #1f1f29; font-weight: 600; font-size: 13px;
+      display: inline-flex; align-items: center; gap: 8px;
+      text-decoration: none; box-shadow: 0 1px 2px rgba(0,0,0,.04);
+      transition: background .15s ease, box-shadow .15s ease;
+    }
+    .btn-google--sm:hover { background: #f7f8fa; box-shadow: 0 2px 5px rgba(0,0,0,.06); }
+    .btn-google--sm svg { width: 16px; height: 16px; display: block; }
 
     @media (max-width: 900px) {
       .card { grid-template-columns: 1fr; height: auto; }
@@ -92,12 +102,26 @@
       <h1>Sign Up</h1>
       <p class="sub">Create your account to find the perfect student space—rent without brokers.</p>
 
-      {# show non-field errors (e.g., password mismatch from server) #}
       {% if form.non_field_errors %}
         <div class="non-field-errors">
           {% for err in form.non_field_errors %}• {{ err }}<br>{% endfor %}
         </div>
       {% endif %}
+
+      <!-- Compact Google Sign-in -->
+      <div class="oauth--sm full">
+        <a class="btn-google--sm"
+           href="{% provider_login_url 'google' process='login' %}?next=/">
+          <!-- Google “G” SVG -->
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" aria-hidden="true">
+            <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303C33.826 31.91 29.318 35 24 35 16.82 35 11 29.18 11 22S16.82 9 24 9c3.59 0 6.84 1.35 9.31 3.56l5.65-5.65C35.9 3.02 30.24 1 24 1 10.75 1 0 11.75 0 25s10.75 24 24 24 24-10.75 24-24c0-1.62-.17-3.2-.389-4.917z"/>
+            <path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.57 16.1 19.02 13 24 13c3.59 0 6.84 1.35 9.31 3.56l5.65-5.65C35.9 3.02 30.24 1 24 1 14.87 1 6.93 6.16 2.69 14.03l3.616 2.661z"/>
+            <path fill="#4CAF50" d="M24 49c6.1 0 11.68-2.34 15.84-6.16l-7.31-5.99C30.21 38.49 27.27 39.5 24 39.5c-5.29 0-9.81-3.61-11.41-8.47l-6.57 5.06C9.35 42.84 16.17 49 24 49z"/>
+            <path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303c-1.03 3.06-3.26 5.49-6.17 6.85l.004-.003 7.31 5.99C39.41 38.98 48 33 48 25c0-1.62-.17-3.2-.389-4.917z"/>
+          </svg>
+          Sign in with Google
+        </a>
+      </div>
 
       <form id="signupForm" method="post" action="" novalidate>
         {% csrf_token %}
@@ -213,7 +237,7 @@
             required
           />
           <p class="hint">Enter the same password as before, for verification.</p>
-          <div id="pwError" class="err" style="display:none">Passwords don’t match. Please re‑enter.</div>
+          <div id="pwError" class="err" style="display:none">Passwords don’t match. Please re-enter.</div>
           {% if form.password2.errors %}<div class="err">{{ form.password2.errors|join:', ' }}</div>{% endif %}
         </div>
 
@@ -229,7 +253,6 @@
 </div>
 
 <script>
-  // Client-side helpers (optional): basic password match check
   (function() {
     const form = document.getElementById('signupForm');
     const pw1 = document.getElementById('id_password1');

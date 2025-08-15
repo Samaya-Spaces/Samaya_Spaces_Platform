@@ -1,0 +1,61 @@
+{% load static %}<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Rental Agreement</title>
+  <!-- If you prefer external CSS, use static + stylesheets in the view -->
+  <style>
+    @page { size: A4; margin: 20mm; }
+    body { font-family: "DejaVu Sans", Arial, sans-serif; color: #111; font-size: 12px; }
+    h1, h2 { margin: 0 0 8px; }
+    .header { display:flex; justify-content:space-between; align-items:center; margin-bottom: 18px; }
+    .muted { color:#666; }
+    .section { margin: 16px 0; }
+    .box { border:1px solid #ddd; padding:10px; border-radius:6px; }
+    table { width:100%; border-collapse:collapse; margin-top:8px; }
+    td, th { border:1px solid #e6e6e6; padding:6px 8px; text-align:left; vertical-align:top; }
+    .signatures { margin-top:40px; display:flex; gap:40px; }
+    .sig { flex:1; border-top:1px solid #444; padding-top:6px; text-align:center; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <h1>Rental Agreement</h1>
+      <div class="muted">Agreement Date: {{ agreement_date|date:"F j, Y" }}</div>
+    </div>
+    {% if logo_url %}<img src="{{ logo_url }}" alt="Logo" style="height:42px;">{% endif %}
+  </div>
+
+  <div class="section box">
+    <h2>Parties</h2>
+    <p><strong>Landlord:</strong> {{ landlord.name }}{% if landlord.phone %}, {{ landlord.phone }}{% endif %}</p>
+    <p><strong>Tenant:</strong> {{ tenant.name }}{% if tenant.phone %}, {{ tenant.phone }}{% endif %}</p>
+  </div>
+
+  <div class="section">
+    <h2>Property</h2>
+    <table>
+      <tr><th>Address</th><td>{{ address }}</td></tr>
+      <tr><th>Rent</th><td>Rs. {{ rent }}</td></tr>
+      <tr><th>Security Deposit</th><td>Rs. {{ deposit }}</td></tr>
+    </table>
+  </div>
+
+  {% if terms %}
+  <div class="section">
+    <h2>Terms & Conditions</h2>
+    <ol>
+      {% for t in terms %}
+        <li>{{ t }}</li>
+      {% endfor %}
+    </ol>
+  </div>
+  {% endif %}
+
+  <div class="signatures">
+    <div class="sig">Landlord Signature</div>
+    <div class="sig">Tenant Signature</div>
+  </div>
+</body>
+</html>

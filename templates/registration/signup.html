@@ -19,77 +19,168 @@
       --primary-700: #4a2fe6;
       --ring: #e7e8ee;
       --shadow: 0 10px 30px rgba(12, 18, 38, .12);
+      --success: #16a34a;
     }
+
     * { box-sizing: border-box; }
     html, body { height: 100%; margin: 0; }
-    body { background: var(--bg); color: var(--text); font: 15px/1.4 system-ui, sans-serif; }
+    body { background: var(--bg); color: var(--text); font: 15px/1.45 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji", sans-serif; }
 
-    .wrap { min-height: calc(100vh - 1px); display: flex; align-items: center; justify-content: center; }
-    .card {
-      width: 100%; max-width: 1000px; height: 90vh;
-      background: var(--card); box-shadow: var(--shadow);
-      display: grid; grid-template-columns: 1fr 0.9fr;
-      overflow: hidden; border-radius: 16px;
+    .wrap {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 20px;
     }
+
+    .card {
+      width: 100%;
+      max-width: 980px;
+      background: var(--card);
+      box-shadow: var(--shadow);
+      display: grid;
+      grid-template-columns: 1fr 0.9fr;
+      border-radius: 18px;
+      overflow: hidden;
+    }
+
     .media {
       background:
         linear-gradient(0deg, rgba(0,0,0,.18), rgba(0,0,0,.18)),
         url("https://images.unsplash.com/photo-1505691938895-1758d7feb511?q=80&w=1600&auto=format&fit=crop");
       background-size: cover; background-position: center;
+      min-height: 540px; /* ensures nice presence on tall/short screens */
     }
-    .panel { padding: 24px 32px; display: flex; flex-direction: column; justify-content: center; gap: 12px; overflow-y: auto; }
-    h1 { font-size: 28px; margin: 0; }
-    .sub { color: var(--muted); margin-bottom: 6px; font-size: 14px; }
+
+    .panel {
+      padding: 22px 26px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .panel-inner {
+      max-width: 580px;
+      margin: 0 auto;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    h1 { font-size: 26px; margin: 0; letter-spacing: -0.015em; }
+    .sub { color: var(--muted); margin: 0; font-size: 14px; }
+
+    /* compact info row (no scroll feel) */
+    .meta-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 2px;
+    }
+
+    /* Divider with text */
+    .divider {
+      position: relative;
+      text-align: center;
+      margin: 6px 0 2px;
+    }
+    .divider:before {
+      content: "";
+      position: absolute;
+      inset: 50% 0 auto;
+      height: 1px;
+      background: var(--ring);
+      transform: translateY(-50%);
+    }
+    .divider span {
+      position: relative;
+      display: inline-block;
+      padding: 4px 10px;
+      background: var(--card);
+      color: var(--muted);
+      font-size: 12px;
+      z-index: 1;
+    }
 
     /* form */
-    form { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 14px; margin-top: 4px; }
+    form { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 14px; margin-top: 2px; }
     .full { grid-column: 1 / -1; }
-    label { font-weight: 600; font-size: 13px; margin-bottom: 4px; display: block; }
+    label { font-weight: 600; font-size: 12.5px; margin-bottom: 4px; display: block; }
     input {
-      width: 100%; height: 38px; border: 1px solid var(--ring); border-radius: 8px;
-      padding: 6px 10px; font-size: 14px; background: #fff; outline: none;
+      width: 100%;
+      height: 38px;
+      border: 1px solid var(--ring);
+      border-radius: 10px;
+      padding: 6px 10px;
+      font-size: 14px;
+      background: #fff;
+      outline: none;
       transition: border-color .15s ease, box-shadow .15s ease;
     }
-    input:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(91,61,245,.2); }
+    input:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(91,61,245,.18); }
 
-    .hint { margin-top: 3px; color: var(--muted); font-size: 12px; line-height: 1.3; }
+    .hint { margin-top: 4px; color: var(--muted); font-size: 12px; line-height: 1.35; }
     .hint ul { margin: 4px 0 0 16px; padding: 0; }
 
+    /* buttons */
     .btn {
       display: inline-flex; align-items: center; justify-content: center;
-      height: 42px; padding: 0 14px; border-radius: 999px; border: none;
-      background: var(--primary); color: #fff; font-weight: 600; font-size: 14px;
-      cursor: pointer; box-shadow: 0 6px 16px rgba(91,61,245,.25);
+      height: 42px; padding: 0 16px; border-radius: 999px; border: none;
+      background: var(--primary); color: #fff; font-weight: 700; font-size: 14px;
+      cursor: pointer; box-shadow: 0 6px 16px rgba(91,61,245,.22);
       transition: transform .06s ease, background .15s ease;
+      width: 100%;
     }
     .btn:hover { background: var(--primary-700); }
     .btn:active { transform: translateY(1px); }
 
-    .foot { margin-top: 4px; font-size: 13px; color: var(--muted); }
+    /* Google button styled anchor (no functional changes) */
+    .google-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      height: 42px;
+      border-radius: 999px;
+      border: 1px solid var(--ring);
+      background: #fff;
+      color: #1f1f29;
+      font-weight: 700;
+      font-size: 14px;
+      text-decoration: none;
+      width: 100%;
+      transition: box-shadow .15s ease, transform .06s ease, border-color .15s ease;
+    }
+    .google-btn:hover { box-shadow: 0 6px 16px rgba(0,0,0,.06); border-color: #dadce0; }
+    .google-btn:active { transform: translateY(1px); }
+    .google-icon {
+      width: 18px; height: 18px; display: inline-block; line-height: 0;
+    }
+
+    /* two-button layout without extra scrolling */
+    .action-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .foot { margin-top: 6px; font-size: 13px; color: var(--muted); text-align: center; }
 
     /* Error styles */
     .err { color: #b42318; font-size: 12px; margin-top: 4px; }
     .field-error { border-color: #b42318 !important; box-shadow: 0 0 0 2px rgba(180,35,24,.15) !important; }
-    .non-field-errors { grid-column: 1 / -1; padding: 10px 12px; border-radius: 8px; background: #fff3f2; color: #8a1f16; font-size: 13px; }
+    .non-field-errors { grid-column: 1 / -1; padding: 10px 12px; border-radius: 10px; background: #fff3f2; color: #8a1f16; font-size: 13px; }
 
-    /* Compact Google button */
-    .oauth--sm { margin: 6px 0 10px; display: flex; justify-content: flex-start; }
-    .btn-google--sm {
-      width: auto; height: 36px; padding: 0 12px;
-      border-radius: 8px; border: 1px solid #dadce0;
-      background: #fff; color: #1f1f29; font-weight: 600; font-size: 13px;
-      display: inline-flex; align-items: center; gap: 8px;
-      text-decoration: none; box-shadow: 0 1px 2px rgba(0,0,0,.04);
-      transition: background .15s ease, box-shadow .15s ease;
-    }
-    .btn-google--sm:hover { background: #f7f8fa; box-shadow: 0 2px 5px rgba(0,0,0,.06); }
-    .btn-google--sm svg { width: 16px; height: 16px; display: block; }
-
-    @media (max-width: 900px) {
-      .card { grid-template-columns: 1fr; height: auto; }
+    /* responsive */
+    @media (max-width: 980px) {
+      .card { grid-template-columns: 1fr; }
       .media { display: none; }
-      .panel { padding: 20px; }
+      .panel { padding: 18px; }
+      .panel-inner { max-width: 560px; }
       form { grid-template-columns: 1fr; }
+      .action-row { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -99,155 +190,167 @@
     <div class="media" aria-hidden="true"></div>
 
     <div class="panel">
-      <h1>Sign Up</h1>
-      <p class="sub">Create your account to find the perfect student space—rent without brokers.</p>
-
-      {% if form.non_field_errors %}
-        <div class="non-field-errors">
-          {% for err in form.non_field_errors %}• {{ err }}<br>{% endfor %}
-        </div>
-      {% endif %}
-
-      <!-- Compact Google Sign-in -->
-      <div class="oauth--sm full">
-        <a class="btn-google--sm"
-           href="{% provider_login_url 'google' process='login' %}?next=/">
-          <!-- Google “G” SVG -->
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" aria-hidden="true">
-            <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303C33.826 31.91 29.318 35 24 35 16.82 35 11 29.18 11 22S16.82 9 24 9c3.59 0 6.84 1.35 9.31 3.56l5.65-5.65C35.9 3.02 30.24 1 24 1 10.75 1 0 11.75 0 25s10.75 24 24 24 24-10.75 24-24c0-1.62-.17-3.2-.389-4.917z"/>
-            <path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.57 16.1 19.02 13 24 13c3.59 0 6.84 1.35 9.31 3.56l5.65-5.65C35.9 3.02 30.24 1 24 1 14.87 1 6.93 6.16 2.69 14.03l3.616 2.661z"/>
-            <path fill="#4CAF50" d="M24 49c6.1 0 11.68-2.34 15.84-6.16l-7.31-5.99C30.21 38.49 27.27 39.5 24 39.5c-5.29 0-9.81-3.61-11.41-8.47l-6.57 5.06C9.35 42.84 16.17 49 24 49z"/>
-            <path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303c-1.03 3.06-3.26 5.49-6.17 6.85l.004-.003 7.31 5.99C39.41 38.98 48 33 48 25c0-1.62-.17-3.2-.389-4.917z"/>
-          </svg>
-          Sign in with Google
-        </a>
-      </div>
-
-      <form id="signupForm" method="post" action="" novalidate>
-        {% csrf_token %}
-
-        <!-- Username -->
-        <div class="full">
-          <label for="id_username">Username:</label>
-          <input
-            id="id_username"
-            name="{{ form.username.name|default:'username' }}"
-            type="text"
-            value="{{ form.username.value|default_if_none:'' }}"
-            required pattern="[A-Za-z0-9@.+_\-]{1,150}" maxlength="150"
-            placeholder="your_username"
-            class="{% if form.username.errors %}field-error{% endif %}"
-            autocomplete="username"
-          />
-          <p class="hint">Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.</p>
-          {% if form.username.errors %}<div class="err">{{ form.username.errors|join:', ' }}</div>{% endif %}
-        </div>
-
-        <!-- First & Last name -->
-        <div>
-          <label for="id_first_name">First name:</label>
-          <input
-            id="id_first_name"
-            name="{{ form.first_name.name|default:'first_name' }}"
-            type="text"
-            value="{{ form.first_name.value|default_if_none:'' }}"
-            class="{% if form.first_name.errors %}field-error{% endif %}"
-            autocomplete="given-name"
-          />
-          {% if form.first_name.errors %}<div class="err">{{ form.first_name.errors|join:', ' }}</div>{% endif %}
-        </div>
-
-        <div>
-          <label for="id_last_name">Last name:</label>
-          <input
-            id="id_last_name"
-            name="{{ form.last_name.name|default:'last_name' }}"
-            type="text"
-            value="{{ form.last_name.value|default_if_none:'' }}"
-            class="{% if form.last_name.errors %}field-error{% endif %}"
-            autocomplete="family-name"
-          />
-          {% if form.last_name.errors %}<div class="err">{{ form.last_name.errors|join:', ' }}</div>{% endif %}
-        </div>
-
-        <!-- Email -->
-        <div class="full">
-          <label for="id_email">Email address:</label>
-          <input
-            id="id_email"
-            name="{{ form.email.name|default:'email' }}"
-            type="email"
-            value="{{ form.email.value|default_if_none:'' }}"
-            class="{% if form.email.errors %}field-error{% endif %}"
-            placeholder="you@example.com"
-            autocomplete="email"
-          />
-          {% if form.email.errors %}<div class="err">{{ form.email.errors|join:', ' }}</div>{% endif %}
-        </div>
-
-        <!-- Phone -->
-        <div class="full">
-          <label for="id_phone">Phone number:</label>
-          <input
-            id="id_phone"
-            name="{{ form.phone.name|default:'phone' }}"
-            type="tel"
-            value="{{ form.phone.value|default_if_none:'' }}"
-            class="{% if form.phone.errors %}field-error{% endif %}"
-            placeholder="+9779847352926"
-            pattern="^\+\d{10,15}$"
-            autocomplete="tel"
-          />
-          <p class="hint">Enter phone number in format: +9779847352926</p>
-          {% if form.phone.errors %}<div class="err">{{ form.phone.errors|join:', ' }}</div>{% endif %}
-        </div>
-
-        <!-- Password -->
-        <div class="full">
-          <label for="id_password1">Password:</label>
-          <input
-            id="id_password1"
-            name="{{ form.password1.name|default:'password1' }}"
-            type="password"
-            class="{% if form.password1.errors %}field-error{% endif %}"
-            minlength="8"
-            autocomplete="new-password"
-            required
-          />
-          <div class="hint">
-            <ul>
-              <li>Your password can’t be too similar to your other personal information.</li>
-              <li>Your password must contain at least 8 characters.</li>
-              <li>Your password can’t be a commonly used password.</li>
-              <li>Your password can’t be entirely numeric.</li>
-            </ul>
+      <div class="panel-inner">
+        <div class="meta-row">
+          <div>
+            <h1>Sign Up</h1>
+            <p class="sub">Create your account to find the perfect student space — rent without brokers.</p>
           </div>
-          {% if form.password1.errors %}<div class="err">{{ form.password1.errors|join:', ' }}</div>{% endif %}
         </div>
 
-        <!-- Password confirmation -->
-        <div class="full">
-          <label for="id_password2">Password confirmation:</label>
-          <input
-            id="id_password2"
-            name="{{ form.password2.name|default:'password2' }}"
-            type="password"
-            class="{% if form.password2.errors %}field-error{% endif %}"
-            autocomplete="new-password"
-            required
-          />
-          <p class="hint">Enter the same password as before, for verification.</p>
-          <div id="pwError" class="err" style="display:none">Passwords don’t match. Please re-enter.</div>
-          {% if form.password2.errors %}<div class="err">{{ form.password2.errors|join:', ' }}</div>{% endif %}
+        {% if form.non_field_errors %}
+          <div class="non-field-errors">
+            {% for err in form.non_field_errors %}• {{ err }}<br>{% endfor %}
+          </div>
+        {% endif %}
+
+        <!-- Actions up top so users see both options without scrolling -->
+        <div class="action-row full">
+          <a href="{% provider_login_url 'google' %}?next=/" class="google-btn" aria-label="Continue with Google">
+            <span class="google-icon" aria-hidden="true">
+              <!-- Google "G" icon (SVG) -->
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 533.5 544.3" width="18" height="18">
+                <path d="M533.5 278.4c0-17.4-1.6-34.1-4.7-50.3H272v95.1h147.2c-6.4 34.7-26 64.1-55.1 83.8v69.4h88.9c52.1-48 80.5-118.7 80.5-197.9z" fill="#4285F4"/>
+                <path d="M272 544.3c72.9 0 134.2-24.1 178.9-65.3l-88.9-69.4c-24.7 16.6-56.3 26.3-90 26.3-69 0-127.4-46.6-148.3-109.1H31.3v68.5c44.5 88 135.5 148.9 240.7 148.9z" fill="#34A853"/>
+                <path d="M123.7 326.8c-10.6-31.8-10.6-66 0-97.8v-68.5H31.3c-41.2 81.9-41.2 175 0 256.9l92.4-68.5z" fill="#FBBC05"/>
+                <path d="M272 107.7c39.7-.6 78.1 14.4 107.3 42.3l80.1-80.1C407.2 25 342.5-.1 272 0 166.8 0 75.8 60.9 31.3 148.9l92.4 68.5C144.6 154.8 203 108.2 272 107.7z" fill="#EA4335"/>
+              </svg>
+            </span>
+            Continue with Google
+          </a>
+
+          <!-- <button class="btn" type="submit" form="signupForm">Create account</button> --> 
         </div>
 
-        <!-- Submit -->
-        <div class="full">
-          <button class="btn" type="submit">Sign Up</button>
-        </div>
-      </form>
+        <div class="divider"><span>or use your email</span></div>
 
-      <p class="foot">Already have an account? <a href="{% url 'login' %}">Log in</a></p>
+        <form id="signupForm" method="post" action="" novalidate>
+          {% csrf_token %}
+
+          <!-- Username -->
+          <div class="full">
+            <label for="id_username">Username:</label>
+            <input
+              id="id_username"
+              name="{{ form.username.name|default:'username' }}"
+              type="text"
+              value="{{ form.username.value|default_if_none:'' }}"
+              required pattern="[A-Za-z0-9@.+_\-]{1,150}" maxlength="150"
+              placeholder="your_username"
+              class="{% if form.username.errors %}field-error{% endif %}"
+              autocomplete="username"
+            />
+            <p class="hint">Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.</p>
+            {% if form.username.errors %}<div class="err">{{ form.username.errors|join:', ' }}</div>{% endif %}
+          </div>
+
+          <!-- First & Last name -->
+          <div>
+            <label for="id_first_name">First name:</label>
+            <input
+              id="id_first_name"
+              name="{{ form.first_name.name|default:'first_name' }}"
+              type="text"
+              value="{{ form.first_name.value|default_if_none:'' }}"
+              class="{% if form.first_name.errors %}field-error{% endif %}"
+              autocomplete="given-name"
+            />
+            {% if form.first_name.errors %}<div class="err">{{ form.first_name.errors|join:', ' }}</div>{% endif %}
+          </div>
+
+          <div>
+            <label for="id_last_name">Last name:</label>
+            <input
+              id="id_last_name"
+              name="{{ form.last_name.name|default:'last_name' }}"
+              type="text"
+              value="{{ form.last_name.value|default_if_none:'' }}"
+              class="{% if form.last_name.errors %}field-error{% endif %}"
+              autocomplete="family-name"
+            />
+            {% if form.last_name.errors %}<div class="err">{{ form.last_name.errors|join:', ' }}</div>{% endif %}
+          </div>
+
+          <!-- Email -->
+          <div class="full">
+            <label for="id_email">Email address:</label>
+            <input
+              id="id_email"
+              name="{{ form.email.name|default:'email' }}"
+              type="email"
+              value="{{ form.email.value|default_if_none:'' }}"
+              class="{% if form.email.errors %}field-error{% endif %}"
+              placeholder="you@example.com"
+              autocomplete="email"
+            />
+            {% if form.email.errors %}<div class="err">{{ form.email.errors|join:', ' }}</div>{% endif %}
+          </div>
+
+          <!-- Phone -->
+          <div class="full">
+            <label for="id_phone">Phone number:</label>
+            <input
+              id="id_phone"
+              name="{{ form.phone.name|default:'phone' }}"
+              type="tel"
+              value="{{ form.phone.value|default_if_none:'' }}"
+              class="{% if form.phone.errors %}field-error{% endif %}"
+              placeholder="+9779847352926"
+              pattern="^\+\d{10,15}$"
+              autocomplete="tel"
+            />
+            <p class="hint">Enter phone number in format: +9779847352926</p>
+            {% if form.phone.errors %}<div class="err">{{ form.phone.errors|join:', ' }}</div>{% endif %}
+          </div>
+
+          <!-- Password -->
+          <div class="full">
+            <label for="id_password1">Password:</label>
+            <input
+              id="id_password1"
+              name="{{ form.password1.name|default:'password1' }}"
+              type="password"
+              class="{% if form.password1.errors %}field-error{% endif %}"
+              minlength="8"
+              autocomplete="new-password"
+              required
+            />
+            <div class="hint">
+              <ul>
+                <li>Your password can’t be too similar to your other personal information.</li>
+                <li>Your password must contain at least 8 characters.</li>
+                <li>Your password can’t be a commonly used password.</li>
+                <li>Your password can’t be entirely numeric.</li>
+              </ul>
+            </div>
+            {% if form.password1.errors %}<div class="err">{{ form.password1.errors|join:', ' }}</div>{% endif %}
+          </div>
+
+          <!-- Password confirmation -->
+          <div class="full">
+            <label for="id_password2">Password confirmation:</label>
+            <input
+              id="id_password2"
+              name="{{ form.password2.name|default:'password2' }}"
+              type="password"
+              class="{% if form.password2.errors %}field-error{% endif %}"
+              autocomplete="new-password"
+              required
+            />
+            <p class="hint">Enter the same password as before, for verification.</p>
+            <div id="pwError" class="err" style="display:none">Passwords don’t match. Please re-enter.</div>
+            {% if form.password2.errors %}<div class="err">{{ form.password2.errors|join:', ' }}</div>{% endif %}
+          </div>
+
+          <!-- Submit (secondary placement for mobile ergonomics; primary button is above) -->
+          <div class="full">
+            <button class="btn" type="submit">Sign Up</button>
+          </div>
+
+        </form>
+
+        <p class="foot">Already have an account? <a href="{% url 'login' %}">Log in</a></p>
+      </div>
     </div>
   </div>
 </div>

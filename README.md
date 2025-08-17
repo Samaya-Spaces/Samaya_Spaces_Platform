@@ -25,7 +25,25 @@ Whether you’re a student moving to a new city or someone looking for a hassle-
 - **Frontend:** HTML, CSS, JavaScript  
 - **Backend:** Django 
 - **Database:** PostgreSQL  
-- **APIs:** OpenStreet API (for map integration)  
+
+
+## 👩‍💻 Contributing
+We welcome contributions! 🎉  
+Feel free to open **issues**, suggest **new features**, or submit **pull requests** to help improve this project.
+
+## 🙌 Contributors
+- **Ashutosh Koirala** – Frontend Developer  
+- **Kabi Raj Awasthi** – Frontend Developer  
+- **Sakar Kharel** – Backend Developer  
+- **Sweta Sharma** – Backend Developer  
+
+## 📜 License
+This project is licensed under the **MIT License** – free to use, modify, and share.
+
+## ❤️ Acknowledgements
+Special thanks to all teachers, mentors, and fellow developers who inspired the creation of this platform.
+
+
 
 
 ## 📖 Getting Started  
@@ -45,32 +63,10 @@ pip install -r requirements.txt
 python manage.py migrate
 
 # Start the development server
-python manage.py runserver
+python manage.py runserver``` 
 
 
----
-
-## 👩‍💻 Contributing  
-We welcome contributions! 🎉  
-Feel free to open **issues**, suggest **new features**, or submit **pull requests** to help improve this project
-
----
-
-## 🙌 Contributors  
-
-- **Ashutosh Koirala** – Frontend Developer  
-- **Kabi Raj Awasthi** – Frontend Developer 
-- **Sakar Kharel** – Backend Developer  
-- **Sweta Sharma** – Backend Developer  
 
 
----
 
-## 📜 License  
-This project is licensed under the **MIT License** – free to use, modify, and share.  
-
----
-
-## ❤️ Acknowledgements  
-Special thanks to all teachers, mentors and fellow developers who inspired the creation of this platform.  
 

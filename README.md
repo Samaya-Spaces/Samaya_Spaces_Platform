@@ -33,8 +33,8 @@ Feel free to open **issues**, suggest **new features**, or submit **pull request
 
 ## 🙌 Contributors
 - **Ashutosh Koirala** – Frontend Developer  
-- **Kabi Raj Awasthi** – Frontend Developer  
-- **Sakar Kharel** – Backend Developer  
+- **Kabi Raj Awasthi** – Backend Developer  
+- **Sakar Kharel** – Frontend Developer  
 - **Sweta Sharma** – Backend Developer  
 
 ## 📜 License
